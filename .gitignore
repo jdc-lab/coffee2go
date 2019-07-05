@@ -14,3 +14,6 @@
 .idea
 .target
 *.iml
+
+# Ignore generated assets files
+assets.*

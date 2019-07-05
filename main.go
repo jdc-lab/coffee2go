@@ -4,13 +4,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/zserge/lorca"
 	"log"
-	. "net"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
+
+	"github.com/zserge/lorca"
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 		log.Println("UI is ready")
 	})
 
-	ln, err := Listen("tcp", "127.0.0.1:0")
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
 	}
