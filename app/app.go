@@ -9,13 +9,15 @@ import (
 	"os/signal"
 	"runtime"
 
-	"github.com/jdc-lab/coffee2go/conf"
+	"github.com/mattn/go-xmpp"
 
-	"github.com/zserge/lorca"
+	"github.com/jdc-lab/coffee2go/conf"
+	"github.com/jdc-lab/coffee2go/ui"
 )
 
 type app struct {
-	ui lorca.UI
+	ui     ui.Desktop
+	client xmpp.Client
 }
 
 func New(args ...string) *app {
@@ -26,7 +28,7 @@ func New(args ...string) *app {
 	}
 	var err error
 
-	if a.ui, err = lorca.New("", "", conf.Width, conf.Height, args...); err != nil {
+	if a.ui, err = ui.New(conf.Width, conf.Height, args...); err != nil {
 		log.Fatal(err)
 	}
 	return a
