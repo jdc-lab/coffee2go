@@ -10,7 +10,6 @@ import (
 	"runtime"
 
 	"github.com/jdc-lab/coffee2go/conf"
-	. "github.com/jdc-lab/coffee2go/conf"
 
 	"github.com/zserge/lorca"
 )
@@ -23,11 +22,11 @@ func New(args ...string) *app {
 	a := &app{}
 
 	if runtime.GOOS == "linux" {
-		args = append(args, LinuxAppendArgs)
+		args = append(args, conf.LinuxAppendArgs)
 	}
 	var err error
 
-	if a.ui, err = lorca.New("", "", LWidth, LHeight, args...); err != nil {
+	if a.ui, err = lorca.New("", "", conf.Width, conf.Height, args...); err != nil {
 		log.Fatal(err)
 	}
 	return a
