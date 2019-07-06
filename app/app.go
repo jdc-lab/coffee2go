@@ -9,6 +9,9 @@ import (
 	"os/signal"
 	"runtime"
 
+	"github.com/jdc-lab/coffee2go/conf"
+	. "github.com/jdc-lab/coffee2go/conf"
+
 	"github.com/zserge/lorca"
 )
 
@@ -20,11 +23,11 @@ func New(args ...string) *app {
 	a := &app{}
 
 	if runtime.GOOS == "linux" {
-		args = append(args, "--class=Lorca")
+		args = append(args, LinuxAppendArgs)
 	}
 	var err error
 
-	if a.ui, err = lorca.New("", "", 960, 540, args...); err != nil {
+	if a.ui, err = lorca.New("", "", LWidth, LHeight, args...); err != nil {
 		log.Fatal(err)
 	}
 	return a
@@ -34,7 +37,7 @@ func (a *app) Run() {
 	a.ui.Bind("run", func() {
 		log.Printf("Starting UI")
 	})
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	listener, err := net.Listen("tcp", conf.NetAddr)
 
 	if err != nil {
 		log.Fatal(err)

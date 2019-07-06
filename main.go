@@ -7,6 +7,5 @@ import (
 )
 
 func main() {
-	args := []string{}
-	app.New(args...).Run()
+	app.New([]string{}...).Run()
 }
