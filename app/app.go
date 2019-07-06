@@ -5,8 +5,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
-	"os/signal"
 	"runtime"
 
 	"github.com/mattn/go-xmpp"
@@ -45,14 +43,6 @@ func (a *app) Run() {
 	}
 	go http.Serve(listener, http.FileServer(FS))
 	a.ui.Load(fmt.Sprintf("http://%s", listener.Addr()))
-
-	sigc := make(chan os.Signal)
-	signal.Notify(sigc, os.Interrupt)
-
-	select {
-	case <-sigc:
-	case <-a.ui.Done():
-	}
 
 	defer a.ui.Close()
 	defer listener.Close()
