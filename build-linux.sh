@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
-# go generate
-# go build -o ...
+go generate
+go build -o coffee2go

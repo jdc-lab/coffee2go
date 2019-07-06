@@ -36,7 +36,10 @@ func (a *app) Run() {
 	a.ui.Bind("run", func() {
 		log.Printf("Starting UI")
 	})
+	defer a.ui.Close()
+
 	listener, err := net.Listen("tcp", conf.NetAddr)
+	defer listener.Close()
 
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +48,4 @@ func (a *app) Run() {
 	a.ui.Load(fmt.Sprintf("http://%s", listener.Addr()))
 
 	a.ui.Wait()
-
-	defer a.ui.Close()
-	defer listener.Close()
 }
