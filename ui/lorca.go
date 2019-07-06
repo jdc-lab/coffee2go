@@ -26,7 +26,7 @@ func New(width, height int, args ...string) (*Lorca, error) {
 	}
 
 	lorca := &Lorca{
-		ui,
+		inner: ui,
 	}
 	return lorca, nil
 }
@@ -52,5 +52,5 @@ func (l *Lorca) Wait() {
 }
 
 func (l *Lorca) Close() {
-	l.Close()
+	l.inner.Close()
 }

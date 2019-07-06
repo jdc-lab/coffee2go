@@ -44,6 +44,8 @@ func (a *app) Run() {
 	go http.Serve(listener, http.FileServer(FS))
 	a.ui.Load(fmt.Sprintf("http://%s", listener.Addr()))
 
+	a.ui.Wait()
+
 	defer a.ui.Close()
 	defer listener.Close()
 }
