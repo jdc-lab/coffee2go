@@ -1,2 +1,2 @@
-# coffee2go
-> Drink coffee2go and chat with XMPP.
+# Coffee2Go
+> Drink Coffee2Go and chat with XMPP.
