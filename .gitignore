@@ -16,4 +16,4 @@
 *.iml
 
 # Ignore generated assets files
-assets.*
+app/assets.*
