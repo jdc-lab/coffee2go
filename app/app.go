@@ -16,7 +16,9 @@ type app struct {
 	ui lorca.UI
 }
 
-func (a *app) New(args ...string) *app {
+func New(args ...string) *app {
+	a := &app{}
+
 	if runtime.GOOS == "linux" {
 		args = append(args, "--class=Lorca")
 	}
@@ -32,15 +34,13 @@ func (a *app) Run() {
 	a.ui.Bind("run", func() {
 		log.Printf("Starting UI")
 	})
-
-	ln, err := net.Listen("tcp", "127.0.0.1")
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
 
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	go http.Serve(ln, http.FileServer(FS))
-	a.ui.Load(fmt.Sprintf("http://%s", ln.Addr()))
+	go http.Serve(listener, http.FileServer(FS))
+	a.ui.Load(fmt.Sprintf("http://%s", listener.Addr()))
 
 	sigc := make(chan os.Signal)
 	signal.Notify(sigc, os.Interrupt)
@@ -51,5 +51,5 @@ func (a *app) Run() {
 	}
 
 	defer a.ui.Close()
-	defer ln.Close()
+	defer listener.Close()
 }
