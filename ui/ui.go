@@ -9,8 +9,7 @@ import (
 )
 
 type Bindings struct {
-	Send    func(text string)
-	GetText func() string
+	Send func(text string)
 }
 
 type Controller struct {
@@ -74,5 +73,8 @@ func (c *Controller) bind(name string, f interface{}) {
 
 func (c *Controller) setupBindings() {
 	c.bind("goSend", c.bindings.Send)
-	c.bind("goGetText", c.bindings.GetText)
+}
+
+func (c *Controller) AppendHistory(history string) {
+	c.ui.AppendHistory(history)
 }

@@ -2,6 +2,8 @@ package xmpp
 
 import (
 	"crypto/tls"
+	"fmt"
+	"log"
 	"strings"
 
 	"github.com/mattn/go-xmpp"
@@ -48,4 +50,29 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 	}
 
 	return &Client{*c}, nil
+}
+
+func (c *Client) Listen() {
+	go func() {
+		for {
+			chat, err := c.Recv()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			switch v := chat.(type) {
+			case xmpp.Chat:
+				fmt.Println("asdf ", v.Remote, v.Text)
+				if len(v.Text) > 0 {
+
+				}
+
+			case xmpp.Presence:
+				//fmt.Println(v.From, v.Show)
+				fmt.Println("Not supported yet")
+			default: //
+				fmt.Println("Not supported yet")
+			}
+		}
+	}()
 }

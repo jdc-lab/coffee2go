@@ -40,19 +40,19 @@
         </div>
 
         <!--
-            Experimental JavaScript for sending and receiving messages.
+            JavaScript as bridge between Go and JS
         -->
         <script>
             const loginForm = docuemnt.querySelector('#form-login');
 
-            const serverInput = document.querySelector("#inp-server");
-            const usernameInput = document.querySelector("#inp-username");
-            const passwordInput = document.querySelector('#inp-password');
+            const serverInp = document.querySelector("#inp-server");
+            const usernameInp = document.querySelector("#inp-username");
+            const passwordInp = document.querySelector('#inp-password');
 
             loginForm.addEventListener('submit', async () => {
-                let server = serverInput.value;
-                let username = usernameInput.value;
-                let password = passwordInput.value;
+                let server = serverInp.value;
+                let username = usernameInp.value;
+                let password = passwordInp.value;
 
                 await goLogin(server, username, password);
             });
