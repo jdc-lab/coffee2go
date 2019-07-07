@@ -1,11 +1,9 @@
 package app
 
 import (
-	"fmt"
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
 	"github.com/jdc-lab/coffee2go/xmpp"
-	"log"
 	"sync"
 )
 
@@ -14,20 +12,8 @@ type chatText struct {
 	text string
 }
 
-func (t *chatText) Set(text string) {
-	t.Lock()
-	defer t.Unlock()
-	t.text = text
-}
-
-func (t *chatText) Get() string {
-	t.Lock()
-	defer t.Unlock()
-	return t.text
-}
-
 type App struct {
-	ui     *ui.Controller
+	ui     ui.Controller
 	client *xmpp.Client
 	text   chatText
 }
@@ -39,17 +25,16 @@ func New() (*App, error) {
 	var err error
 
 	bindings := ui.Bindings{
-		Send:    a.text.Set,
-		GetText: a.text.Get,
+		Send: a.send,
 	}
 
 	if uc, err = ui.NewController(conf.Width, conf.Height, bindings); err != nil {
 		return nil, err
 	}
 
-	a.ui = uc
+	a.ui = *uc
 
-	if a.client, err = xmpp.NewClient("127.0.0.1:7443", "jh@localhost", "jh", true); err != nil {
+	if a.client, err = xmpp.NewClient("127.0.0.1:5223", "jh@localhost.localdomain", "jh", true); err != nil {
 		return nil, err
 	}
 
@@ -57,21 +42,11 @@ func New() (*App, error) {
 }
 
 func (a *App) Run() {
-	// TODO: this is only for testing xmpp
-	go func() {
-		for {
-			chat, err := a.client.Recv()
-			if err != nil {
-				fmt.Println("lol")
-				log.Fatal(err)
-			}
-			switch v := chat.(type) {
-			case xmpp.Chat:
-				fmt.Println(v.Remote, v.Text)
-			case xmpp.Presence:
-				fmt.Println(v.From, v.Show)
-			}
-		}
-	}()
+	a.client.Listen()
 	a.ui.Run()
+}
+
+func (a *App) send(text string) {
+	a.ui.AppendHistory(text)
+	// TODO: send message via xmpp
 }

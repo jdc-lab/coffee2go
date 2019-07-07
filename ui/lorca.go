@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime"
@@ -14,6 +15,9 @@ type ui interface {
 	Load(url string) error
 	Wait()
 	Close()
+
+	// methods to execute coffee2go specific actions
+	AppendHistory(history string)
 }
 
 type Lorca struct {
@@ -59,4 +63,8 @@ func (l *Lorca) Wait() {
 
 func (l *Lorca) Close() {
 	l.inner.Close()
+}
+
+func (l *Lorca) AppendHistory(history string) {
+	l.inner.Eval(fmt.Sprintf(`appendHistory("%q")`, history))
 }

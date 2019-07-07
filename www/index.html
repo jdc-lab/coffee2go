@@ -112,7 +112,7 @@
             -->
             <div class="col-8 h-100 bg-light">
                 <div class="m-4">
-                    <div id="out-message"></div>
+                    <div id="history"></div>
                     <div class="input-group">
                         <label for="inp-message">Send: </label>
                         <input type="text" class="form-control" id="inp-message" placeholder="Text">
@@ -125,16 +125,19 @@
         </div>
 
         <!--
-            Experimental JavaScript for sending and receiving messages.
+            JavaScript as bridge between Go and JS
         -->
         <script>
-
             const btnSend = document.querySelector('#btn-send');
             const txtInput = document.querySelector("#inp-message");
-            const textOutput = document.querySelector('#out-message');
+            const historyOutput = document.querySelector('#history');
 
-            const render = async () => {
-                textOutput.innerText = `You wrote: ${await goGetText()}`;
+            const appendHistory = async (message) => {
+                console.log("Appending " + message)
+                let newHistory = document.createElement('div');
+                newHistory.innerText = message;
+
+                historyOutput.appendChild(newHistory)
             };
 
             btnSend.addEventListener('click', async () => {
@@ -142,10 +145,8 @@
 
                 await goSend(text);
 
-                render();
+                await appendHistory(text);
             });
-
-            render();
         </script>
     </body>
 
