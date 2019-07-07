@@ -1,22 +1,14 @@
 package app
 
 import (
-	"sync"
-
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
 	"github.com/jdc-lab/coffee2go/xmpp"
 )
 
-type chatText struct {
-	sync.Mutex
-	text string
-}
-
 type App struct {
 	ui     ui.Controller
 	client *xmpp.Client
-	text   chatText
 }
 
 func New() (*App, error) {
@@ -31,6 +23,7 @@ func New() (*App, error) {
 
 	a.ui = *uc
 
+	// seup needed bindings (note: "go" is appended to each name)
 	a.ui.Bind("Send", a.send)
 	a.ui.Bind("Login", a.login)
 
