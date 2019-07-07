@@ -1,76 +1,30 @@
 package ui
 
 import (
-	"fmt"
 	"log"
-	"net"
-	"net/http"
-
-	"github.com/jdc-lab/coffee2go/conf"
 )
 
+// Controller is the connection between ui and app.
+// it mostly just inherits a ui, but it also provides some convenience-methods, which make sense for all ui's. (e.g. Bind)
 type Controller struct {
-	ui       ui
-	listener net.Listener
+	ui
 }
 
-func NewController(width int, height int) (*Controller, error) {
-	c := &Controller{}
+func NewLorcaController(width int, height int) (*Controller, error) {
+	g := &Controller{}
 
 	var err error
 
-	if c.ui, err = NewLorca(width, height); err != nil {
+	if g.ui, err = NewLorca(width, height); err != nil {
 		return nil, err
 	}
 
-	return c, nil
-}
-
-func (c *Controller) Run() {
-	if err := c.ui.Bind("run", func() {
-		log.Printf("Starting UI")
-	}); err != nil {
-		log.Fatal(err)
-	}
-	defer c.ui.Close()
-
-	var err error
-
-	c.listener, err = net.Listen("tcp", conf.NetAddr)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer func() {
-		if err := c.listener.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	go func() {
-		if err := http.Serve(c.listener, http.FileServer(FS)); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	if err = c.ui.Load(fmt.Sprintf("http://%s", c.listener.Addr())); err != nil {
-		log.Fatal(err)
-	}
-
-	c.ui.Wait()
+	return g, nil
 }
 
 func (c *Controller) Bind(name string, f interface{}) {
+	// TODO: check if f is a func
 	if err := c.ui.Bind("go"+name, f); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func (c *Controller) AppendHistory(history string) {
-	c.ui.AppendHistory(history)
-}
-
-func (c *Controller) Login(server, username, password string) {
-	url := fmt.Sprintf("http://%s/%s", c.listener.Addr(), conf.AppFile)
-	c.ui.Load(url)
 }

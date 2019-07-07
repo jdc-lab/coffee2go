@@ -2,6 +2,9 @@ package ui
 
 import (
 	"fmt"
+	"log"
+	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
@@ -12,16 +15,17 @@ import (
 
 type ui interface {
 	Bind(name string, f interface{}) error
-	Load(url string) error
-	Wait()
 	Close()
+	Run()
 
 	// methods to execute coffee2go specific actions
 	AppendHistory(history string)
+	Login(server string, username string)
 }
 
 type Lorca struct {
-	inner lorca.UI
+	inner    lorca.UI
+	listener net.Listener
 }
 
 func NewLorca(width, height int, args ...string) (*Lorca, error) {
@@ -41,24 +45,44 @@ func NewLorca(width, height int, args ...string) (*Lorca, error) {
 	return lorca, nil
 }
 
+func (l *Lorca) Run() {
+	// Wait for UI until it has been started
+	if err := l.Bind("run", func() {
+		log.Printf("Starting UI")
+	}); err != nil {
+		log.Fatal(err)
+	}
+	defer l.Close()
+
+	var err error
+
+	l.listener, err = net.Listen("tcp", conf.NetAddr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer func() {
+		if err := l.listener.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	go func() {
+		if err := http.Serve(l.listener, http.FileServer(FS)); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	if err = l.load(fmt.Sprintf("http://%s", l.listener.Addr())); err != nil {
+		log.Fatal(err)
+	}
+
+	l.wait()
+}
+
 func (l *Lorca) Bind(name string, f interface{}) error {
 	err := l.inner.Bind(name, f)
 	return err
-}
-
-func (l *Lorca) Load(url string) error {
-	err := l.inner.Load(url)
-	return err
-}
-
-func (l *Lorca) Wait() {
-	sigc := make(chan os.Signal)
-	signal.Notify(sigc, os.Interrupt)
-
-	select {
-	case <-sigc:
-	case <-l.inner.Done():
-	}
 }
 
 func (l *Lorca) Close() {
@@ -67,4 +91,26 @@ func (l *Lorca) Close() {
 
 func (l *Lorca) AppendHistory(history string) {
 	l.inner.Eval(fmt.Sprintf(`appendHistory(%q)`, history))
+}
+
+// Login just switches from Login screen to main screen
+func (l *Lorca) Login(server string, username string) {
+	// TODO: server and usename needed (e.g. display somewhere in gui?)
+	url := fmt.Sprintf("http://%s/%s", l.listener.Addr(), conf.AppFile)
+	l.load(url)
+}
+
+func (l *Lorca) load(url string) error {
+	err := l.inner.Load(url)
+	return err
+}
+
+func (l *Lorca) wait() {
+	sigc := make(chan os.Signal)
+	signal.Notify(sigc, os.Interrupt)
+
+	select {
+	case <-sigc:
+	case <-l.inner.Done():
+	}
 }

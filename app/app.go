@@ -17,7 +17,7 @@ func New() (*App, error) {
 	var uc *ui.Controller
 	var err error
 
-	if uc, err = ui.NewController(conf.Width, conf.Height); err != nil {
+	if uc, err = ui.NewLorcaController(conf.Width, conf.Height); err != nil {
 		return nil, err
 	}
 
@@ -45,5 +45,5 @@ func (a *App) send(text string) {
 }
 
 func (a *App) login(server, username, password string) {
-	a.ui.Login(server, username, password)
+	a.ui.Login(server, username)
 }
