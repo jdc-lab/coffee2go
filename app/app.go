@@ -2,11 +2,12 @@ package app
 
 import (
 	"fmt"
+	"log"
+	"sync"
+
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
 	"github.com/jdc-lab/coffee2go/xmpp"
-	"log"
-	"sync"
 )
 
 type chatText struct {
@@ -49,7 +50,7 @@ func New() (*App, error) {
 
 	a.ui = uc
 
-	if a.client, err = xmpp.NewClient("127.0.0.1:7443", "jh@localhost", "jh", true); err != nil {
+	if a.client, err = xmpp.NewClient("127.0.0.1:5223", "braun@desktop-8dbsccu", "03110110", true); err != nil {
 		return nil, err
 	}
 
