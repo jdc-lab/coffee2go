@@ -16,10 +16,11 @@ import (
 type ui interface {
 	Bind(name string, f interface{}) error
 	Close()
-	Run(string, string, string)
+	Run(onLoaded func())
 
 	// methods to execute coffee2go specific actions
 	AppendHistory(history string)
+	PrefillForm(server, username, password string)
 	Login(server string, username string)
 }
 
@@ -45,16 +46,12 @@ func NewLorca(width, height int, args ...string) (*Lorca, error) {
 	return lorca, nil
 }
 
-func (l *Lorca) Run(server, username, password string) {
-	// Wait for UI until it has been started
-	if err := l.Bind("run", func() {
-		log.Printf("Starting UI")
-		if server != "" || username != "" || password != "" {
-			l.prefillForm(server, username, password)
-		}
-	}); err != nil {
+func (l *Lorca) Run(onLoaded func()) {
+	// Event when ui is started
+	if err := l.Bind("run", onLoaded); err != nil {
 		log.Fatal(err)
 	}
+
 	defer l.Close()
 
 	var err error
@@ -96,6 +93,11 @@ func (l *Lorca) AppendHistory(history string) {
 	l.inner.Eval(fmt.Sprintf(`appendHistory(%q)`, history))
 }
 
+func (l *Lorca) PrefillForm(server, username, password string) {
+	fn := fmt.Sprintf(`prefillForm(%q, %q, %q)`, server, username, password)
+	l.inner.Eval(fn)
+}
+
 // Login just switches from Login screen to main screen
 func (l *Lorca) Login(server string, username string) {
 	// TODO: server and usename needed (e.g. display somewhere in gui?)
@@ -116,9 +118,4 @@ func (l *Lorca) wait() {
 	case <-sigc:
 	case <-l.inner.Done():
 	}
-}
-
-func (l *Lorca) prefillForm(server, username, password string) {
-	fn := fmt.Sprintf(`prefillForm(%q, %q, %q)`, server, username, password)
-	l.inner.Eval(fn)
 }
