@@ -1,24 +1,60 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="h-100">
     <head>
         <title>Coffee2Go</title>
         <link rel="shortcut icon" href="img/favicon.png">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/default.css">
     </head>
-    <body onload="run()">
-        <h2>Drink Coffee2Go and chat with XMPP.</h2>
-        <div id="chat">
-            <div id="out-message"></div>
-            <div id="input">
-                <label for="inp-message">Chat</label>
-                <input type="text" id="inp-message" name="Message" minlength="4" maxlength="8" size="10">
-
-                <button type="button" id="btn-send">Send</button>
+    <body class="h-100" onload="run()">
+        <div class="row m-0 h-100">
+            <div class="col-4 p-0 h-100 bg-dark">
+                <h6 class="d-block text-center text-light pt-4 pb-3">Recent Conversations</h6>
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action flex-column align-items-start active">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Lisa Espresso</h6>
+                            <small>25 min ago</small>
+                        </div>
+                        <small class="mb-1">Donec id elit non mi porta gravida at eget metus mi porta gravida id elit ...</small>
+                    </a>
+                    <a class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Peter Portioli</h6>
+                            <small class="text-muted">2 hours ago</small>
+                        </div>
+                        <small class="mb-1">Donec id elit non mi porta eget ...</small>
+                    </a>
+                    <a class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Carla Coffee</h6>
+                            <small>3 hours ago</small>
+                        </div>
+                        <small class="mb-1">Donec id elit non mi porta gravida at eget metus mi porta gravida id elit ...</small>
+                      </a>
+                    <a class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Felix Arabica</h6>
+                            <small class="text-muted">3 days ago</small>
+                        </div>
+                        <small class="mb-1">Donec id elit non mi porta ...</small>
+                    </a>
+                </div>
+            </div>
+            <div class="col-8 h-100 bg-light">
+                <div class="m-4">
+                    <div id="out-message"></div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="inp-message" placeholder="Text">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" id="btn-send" type="button">send</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Connect UI actions to Go functions -->
         <script>
+
             const btnSend = document.querySelector('#btn-send');
             const txtInput = document.querySelector("#inp-message");
             const textOutput = document.querySelector('#out-message');

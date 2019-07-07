@@ -1,9 +1,22 @@
 * {
-    font-family: Arial, Helvetica, sans-serif;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.active {
+    background-color: #623B3A !important;
+    border-color: #623B3A !important;
+}
+
+.list-group-item {
+    cursor: pointer;
+}
+
+.list-group-item.active h6,
+.list-group-item.active small {
+    color: #fff !important;
 }
