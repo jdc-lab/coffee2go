@@ -49,7 +49,9 @@
             const usernameInp = document.querySelector("#inp-username");
             const passwordInp = document.querySelector('#inp-password');
 
-            loginForm.addEventListener('submit', async () => {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
                 let server = serverInp.value;
                 let username = usernameInp.value;
                 let password = passwordInp.value;
