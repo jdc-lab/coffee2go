@@ -3,10 +3,9 @@ package xmpp
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/mattn/go-xmpp"
 	"log"
 	"strings"
-
-	"github.com/mattn/go-xmpp"
 )
 
 type Chat struct {
@@ -18,6 +17,10 @@ type Presence struct {
 }
 
 type Client struct {
+	xmpp.Client
+}
+
+type Roster struct {
 	xmpp.Client
 }
 
@@ -52,7 +55,7 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 	return &Client{*c}, nil
 }
 
-func (c *Client) Listen(recvFunc func(message string)) {
+func (c *Client) Listen(msgRecvFunc func(message string)) {
 	go func() {
 		for {
 			chat, err := c.Recv()
@@ -64,14 +67,19 @@ func (c *Client) Listen(recvFunc func(message string)) {
 			case xmpp.Chat:
 
 				if len(v.Text) > 0 {
-					recvFunc(v.Remote + ": " + v.Text)
+					msgRecvFunc(v.Remote + ": " + v.Text)
 				}
 			case xmpp.Presence:
 				//fmt.Println(v.From, v.Show)
 				fmt.Println("Not supported yet")
+			case xmpp.Roster:
+				fmt.Println(v)
 			default: //
 				fmt.Println("Not supported yet")
 			}
 		}
 	}()
+}
+
+func (c *Client) Send() {
 }

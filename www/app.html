@@ -55,7 +55,7 @@
                     All known contacts (XMPP Roster).
                 -->
                 <h6 class="d-block text-center text-light pt-4 pb-3">My Contacts</h6>
-                <div class="list-group list-group-flush">
+                <div id="contacts" class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1"><span class="status bg-success mr-2"></span>Lisa Espresso</h6>
@@ -125,7 +125,7 @@
         </div>
 
         <!--
-            Experimental JavaScript for sending and receiving messages.
+            JavaScript as bridge between Go and JS
         -->
         <script>
             const sendBtn = document.querySelector('#btn-send');
@@ -145,7 +145,6 @@
                 newHistory.innerText = message;
 
                 history.appendChild(newHistory)
-                return 22
             };
         </script>
     </body>

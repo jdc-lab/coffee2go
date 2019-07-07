@@ -50,10 +50,11 @@
             const passwordInp = document.querySelector('#inp-password');
 
             prefillForm = function (server, username, password) {
+                console.log(server);
                 serverInp.value = server;
                 usernameInp.value = username;
                 passwordInp.value = password;
-            }
+            };
 
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();

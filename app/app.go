@@ -41,7 +41,7 @@ func (a *App) send(text string) {
 	if a.client == nil {
 		panic("This function should never be called if client is not logged in.")
 	}
-
+	a.client.Send()
 	a.ui.AppendHistory("Me: " + text)
 	// TODO: send message via xmpp
 }
@@ -55,5 +55,7 @@ func (a *App) login(server, username, password string) {
 		a.client = client
 		a.client.Listen(a.ui.AppendHistory)
 		a.ui.Login(server, username)
+
+		// TODO: setup Roster
 	}
 }

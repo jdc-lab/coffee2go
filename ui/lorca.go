@@ -21,7 +21,6 @@ type ui interface {
 	// methods to execute coffee2go specific actions
 	AppendHistory(history string)
 	Login(server string, username string)
-	PrefillForm(server, username, password string)
 }
 
 type Lorca struct {
@@ -50,6 +49,9 @@ func (l *Lorca) Run(server, username, password string) {
 	// Wait for UI until it has been started
 	if err := l.Bind("run", func() {
 		log.Printf("Starting UI")
+		if server != "" || username != "" || password != "" {
+			l.prefillForm(server, username, password)
+		}
 	}); err != nil {
 		log.Fatal(err)
 	}
@@ -78,10 +80,6 @@ func (l *Lorca) Run(server, username, password string) {
 		log.Fatal(err)
 	}
 
-	if server != "" && username != "" && password != "" {
-		l.PrefillForm(server, username, password)
-	}
-
 	l.wait()
 }
 
@@ -96,11 +94,6 @@ func (l *Lorca) Close() {
 
 func (l *Lorca) AppendHistory(history string) {
 	l.inner.Eval(fmt.Sprintf(`appendHistory(%q)`, history))
-}
-
-func (l *Lorca) PrefillForm(server, username, password string) {
-	fn := fmt.Sprintf(`PrefillForm(%q, %q, %q)`, server, username, password)
-	l.inner.Eval(fn)
 }
 
 // Login just switches from Login screen to main screen
@@ -123,4 +116,9 @@ func (l *Lorca) wait() {
 	case <-sigc:
 	case <-l.inner.Done():
 	}
+}
+
+func (l *Lorca) prefillForm(server, username, password string) {
+	fn := fmt.Sprintf(`prefillForm(%q, %q, %q)`, server, username, password)
+	l.inner.Eval(fn)
 }

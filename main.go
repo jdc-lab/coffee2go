@@ -4,9 +4,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"os"
-
 	"github.com/jdc-lab/coffee2go/app"
 )
 
@@ -21,8 +18,7 @@ func main() {
 	username := flag.String("username", "", `The XMPP username.`)
 	password := flag.String("password", "", `The corresponding password.`)
 
-	fmt.Printf("Server Addr: %s", *server)
-	fmt.Println(os.Args)
+	flag.Parse()
 
 	a.Run(*server, *username, *password)
 }
