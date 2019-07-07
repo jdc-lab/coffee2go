@@ -1,11 +1,12 @@
 package ui
 
 import (
-	"github.com/jdc-lab/coffee2go/conf"
-	"github.com/zserge/lorca"
 	"os"
 	"os/signal"
 	"runtime"
+
+	"github.com/jdc-lab/coffee2go/conf"
+	"github.com/zserge/lorca"
 )
 
 type ui interface {
