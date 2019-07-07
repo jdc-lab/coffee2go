@@ -7,6 +7,10 @@
     user-select: none;
 }
 
+#col-left {
+    overflow-y: scroll;
+}
+
 .active {
     background-color: #623B3A !important;
     border-color: #623B3A !important;
@@ -14,9 +18,33 @@
 
 .list-group-item {
     cursor: pointer;
+    border-color: #EDEEEF;
 }
 
 .list-group-item.active h6,
 .list-group-item.active small {
     color: #fff !important;
+}
+
+.status {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F8F9FA;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CED4DA;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #CED4DA;
 }
