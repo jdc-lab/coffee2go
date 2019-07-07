@@ -1,15 +1,15 @@
 package app
 
 import (
+	"code.gitea.io/gitea/modules/log"
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
 	"github.com/jdc-lab/coffee2go/xmpp"
 )
 
 type App struct {
-	ui       ui.Controller
-	client   *xmpp.Client
-	loggedIn bool
+	ui     ui.Controller
+	client *xmpp.Client
 }
 
 func New() (*App, error) {
@@ -27,21 +27,17 @@ func New() (*App, error) {
 	// seup needed bindings (note: "go" is appended to each name)
 	a.ui.Bind("Send", a.send)
 	a.ui.Bind("Login", a.login)
-
-	if a.client, err = xmpp.NewClient("127.0.0.1:5223", "jh@localhost.localdomain", "jh", true); err != nil {
-		return nil, err
-	}
+	//"127.0.0.1:5223", "jh@localhost.localdomain", "jh"
 
 	return a, nil
 }
 
 func (a *App) Run() {
-	a.client.Listen(a.ui.AppendHistory)
 	a.ui.Run()
 }
 
 func (a *App) send(text string) {
-	if !a.loggedIn {
+	if a.client == nil {
 		panic("This function should never be called if client is not logged in.")
 	}
 
@@ -50,7 +46,13 @@ func (a *App) send(text string) {
 }
 
 func (a *App) login(server, username, password string) {
-	// TODO: check if login works and start xmpp client here (remove it from New() and remove Listen from Run!)
-	a.loggedIn = true
-	a.ui.Login(server, username)
+	// todo: flag insecureTLS should be false in production (maybe offer flag for client in login screen)
+	if client, err := xmpp.NewClient(server, username, password, true); err != nil {
+		log.Error("Login failed: {}", err)
+		// TODO: pass message to GUI
+	} else {
+		a.client = client
+		a.client.Listen(a.ui.AppendHistory)
+		a.ui.Login(server, username)
+	}
 }
