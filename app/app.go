@@ -26,7 +26,8 @@ func New() (*App, error) {
 	var err error
 
 	bindings := ui.Bindings{
-		Send: a.send,
+		Send:  a.send,
+		Login: a.login,
 	}
 
 	if uc, err = ui.NewController(conf.Width, conf.Height, bindings); err != nil {
@@ -50,4 +51,8 @@ func (a *App) Run() {
 func (a *App) send(text string) {
 	a.ui.AppendHistory(text)
 	// TODO: send message via xmpp
+}
+
+func (a *App) login(server, username, password string) {
+	a.ui.Login(server, username, password)
 }
