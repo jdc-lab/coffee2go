@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <input type="text" class="form-control border-none my-2 text-center" id="inp-server" placeholder="Servername">
                         <input type="text" class="form-control border-none my-2 text-center" id="inp-username" placeholder="Username">
-                        <input type="text" class="form-control border-none my-2 text-center" id="inp-password" placeholder="Password">
+                        <input type="password" class="form-control border-none my-2 text-center" id="inp-password" placeholder="Password">
                         <div class="my-5 text-center">
                             <button type="submit" class="btn btn-primary px-3">
                                 <small class="text-500">START CHATTING</small>
@@ -49,9 +49,15 @@
             const usernameInp = document.querySelector("#inp-username");
             const passwordInp = document.querySelector('#inp-password');
 
+            prefillForm = function (server, username, password) {
+                serverInp.value = server;
+                usernameInp.value = username;
+                passwordInp.value = password;
+            }
+
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
                 let server = serverInp.value;
                 let username = usernameInp.value;
                 let password = passwordInp.value;

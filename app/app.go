@@ -1,10 +1,11 @@
 package app
 
 import (
+	"log"
+
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
 	"github.com/jdc-lab/coffee2go/xmpp"
-	"log"
 )
 
 type App struct {
@@ -32,8 +33,8 @@ func New() (*App, error) {
 	return a, nil
 }
 
-func (a *App) Run() {
-	a.ui.Run()
+func (a *App) Run(server, username, password string) {
+	a.ui.Run(server, username, password)
 }
 
 func (a *App) send(text string) {
