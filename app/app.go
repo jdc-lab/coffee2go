@@ -1,10 +1,10 @@
 package app
 
 import (
-	"code.gitea.io/gitea/modules/log"
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
 	"github.com/jdc-lab/coffee2go/xmpp"
+	"log"
 )
 
 type App struct {
@@ -48,7 +48,7 @@ func (a *App) send(text string) {
 func (a *App) login(server, username, password string) {
 	// todo: flag insecureTLS should be false in production (maybe offer flag for client in login screen)
 	if client, err := xmpp.NewClient(server, username, password, true); err != nil {
-		log.Error("Login failed: {}", err)
+		log.Println("Login failed: {}", err)
 		// TODO: pass message to GUI
 	} else {
 		a.client = client
