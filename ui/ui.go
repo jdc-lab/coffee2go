@@ -2,19 +2,22 @@ package ui
 
 import (
 	"fmt"
-	"github.com/jdc-lab/coffee2go/conf"
 	"log"
 	"net"
 	"net/http"
+
+	"github.com/jdc-lab/coffee2go/conf"
 )
 
 type Bindings struct {
-	Send func(text string)
+	Send  func(text string)
+	Login func(server, username, password string)
 }
 
 type Controller struct {
 	ui       ui
 	bindings Bindings
+	listener net.Listener
 }
 
 func NewController(width int, height int, bindings Bindings) (*Controller, error) {
@@ -41,24 +44,26 @@ func (c *Controller) Run() {
 
 	c.setupBindings()
 
-	listener, err := net.Listen("tcp", conf.NetAddr)
+	var err error
+
+	c.listener, err = net.Listen("tcp", conf.NetAddr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer func() {
-		if err := listener.Close(); err != nil {
+		if err := c.listener.Close(); err != nil {
 			log.Fatal(err)
 		}
 	}()
 
 	go func() {
-		if err := http.Serve(listener, http.FileServer(FS)); err != nil {
+		if err := http.Serve(c.listener, http.FileServer(FS)); err != nil {
 			log.Fatal(err)
 		}
 	}()
 
-	if err = c.ui.Load(fmt.Sprintf("http://%s", listener.Addr())); err != nil {
+	if err = c.ui.Load(fmt.Sprintf("http://%s", c.listener.Addr())); err != nil {
 		log.Fatal(err)
 	}
 
@@ -73,8 +78,14 @@ func (c *Controller) bind(name string, f interface{}) {
 
 func (c *Controller) setupBindings() {
 	c.bind("goSend", c.bindings.Send)
+	c.bind("goLogin", c.bindings.Send)
 }
 
 func (c *Controller) AppendHistory(history string) {
 	c.ui.AppendHistory(history)
+}
+
+func (c *Controller) Login(server, username, password string) {
+	url := fmt.Sprintf("http://%s/app.html", c.listener.Addr())
+	c.ui.Load(url)
 }
