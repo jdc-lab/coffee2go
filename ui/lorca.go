@@ -66,5 +66,5 @@ func (l *Lorca) Close() {
 }
 
 func (l *Lorca) AppendHistory(history string) {
-	l.inner.Eval(fmt.Sprintf(`appendHistory("%q")`, history))
+	l.inner.Eval(fmt.Sprintf(`appendHistory(%q)`, history))
 }

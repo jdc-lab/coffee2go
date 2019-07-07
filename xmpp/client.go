@@ -52,7 +52,7 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 	return &Client{*c}, nil
 }
 
-func (c *Client) Listen() {
+func (c *Client) Listen(recvFunc func(message string)) {
 	go func() {
 		for {
 			chat, err := c.Recv()
@@ -62,11 +62,10 @@ func (c *Client) Listen() {
 
 			switch v := chat.(type) {
 			case xmpp.Chat:
-				fmt.Println("asdf ", v.Remote, v.Text)
+
 				if len(v.Text) > 0 {
-
+					recvFunc(v.Remote + ": " + v.Text)
 				}
-
 			case xmpp.Presence:
 				//fmt.Println(v.From, v.Show)
 				fmt.Println("Not supported yet")

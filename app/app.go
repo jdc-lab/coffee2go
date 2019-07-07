@@ -36,7 +36,7 @@ func New() (*App, error) {
 
 	a.ui = *uc
 
-	if a.client, err = xmpp.NewClient("127.0.0.1:5223", "braun@desktop-8dbsccu", "03110110", true); err != nil {
+	if a.client, err = xmpp.NewClient("127.0.0.1:5223", "jh@localhost.localdomain", "jh", true); err != nil {
 		return nil, err
 	}
 
@@ -44,12 +44,12 @@ func New() (*App, error) {
 }
 
 func (a *App) Run() {
-	a.client.Listen()
+	a.client.Listen(a.ui.AppendHistory)
 	a.ui.Run()
 }
 
 func (a *App) send(text string) {
-	a.ui.AppendHistory(text)
+	a.ui.AppendHistory("Me: " + text)
 	// TODO: send message via xmpp
 }
 

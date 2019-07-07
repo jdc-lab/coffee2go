@@ -132,21 +132,21 @@
             const messageInp = document.querySelector("#inp-message");
             const history = document.querySelector('#history');
             
-            const appendHistory = async (message) => {
-                console.log("Appending " + message)
-                
-                let newHistory = document.createElement('div');
-                newHistory.innerText = message;
-                
-                history.appendChild(newHistory)
-            };
-            
             sendBtn.addEventListener('click', async () => {
                 let text = messageInp.value;
                 
                 await goSend(text);
-                await appendHistory(text);
             });
+
+            // Functions called from GO
+            appendHistory = function (message) {
+
+                let newHistory = document.createElement('div');
+                newHistory.innerText = message;
+
+                history.appendChild(newHistory)
+                return 22
+            };
         </script>
     </body>
 

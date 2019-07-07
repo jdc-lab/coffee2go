@@ -78,7 +78,7 @@ func (c *Controller) bind(name string, f interface{}) {
 
 func (c *Controller) setupBindings() {
 	c.bind("goSend", c.bindings.Send)
-	c.bind("goLogin", c.bindings.Send)
+	c.bind("goLogin", c.bindings.Login)
 }
 
 func (c *Controller) AppendHistory(history string) {
