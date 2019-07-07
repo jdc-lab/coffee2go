@@ -86,6 +86,6 @@ func (c *Controller) AppendHistory(history string) {
 }
 
 func (c *Controller) Login(server, username, password string) {
-	url := fmt.Sprintf("http://%s/app.html", c.listener.Addr())
+	url := fmt.Sprintf("http://%s/%s", c.listener.Addr(), conf.AppFile)
 	c.ui.Load(url)
 }
