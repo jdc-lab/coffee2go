@@ -24,7 +24,7 @@ func New() (*App, error) {
 
 	a.ui = *uc
 
-	// seup needed bindings (note: "go" is appended to each name)
+	// setup needed bindings (note: "go" is appended to each name)
 	a.ui.Bind("Send", a.send)
 	a.ui.Bind("Login", a.login)
 	//"127.0.0.1:5223", "jh@localhost.localdomain", "jh"
