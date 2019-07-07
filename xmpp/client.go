@@ -2,8 +2,9 @@ package xmpp
 
 import (
 	"crypto/tls"
-	"github.com/mattn/go-xmpp"
 	"strings"
+
+	"github.com/mattn/go-xmpp"
 )
 
 type Chat struct {
@@ -22,10 +23,10 @@ func serverName(host string) string {
 	return strings.Split(host, ":")[0]
 }
 
-func NewClient(host string, username string, password string, insecureTls bool) (*Client, error) {
+func NewClient(host string, username string, password string, insecureTLS bool) (*Client, error) {
 	xmpp.DefaultConfig = tls.Config{
 		ServerName:         serverName(host),
-		InsecureSkipVerify: insecureTls,
+		InsecureSkipVerify: insecureTLS,
 	}
 
 	var c *xmpp.Client
