@@ -9,7 +9,8 @@ import (
 )
 
 type Bindings struct {
-	Send func(text string)
+	Send    func(text string)
+	GetText func() string
 }
 
 type Controller struct {
@@ -32,25 +33,46 @@ func NewController(width int, height int, bindings Bindings) (*Controller, error
 }
 
 func (c *Controller) Run() {
-	c.ui.Bind("run", func() {
+	if err := c.ui.Bind("run", func() {
 		log.Printf("Starting UI")
-	})
+	}); err != nil {
+		log.Fatal(err)
+	}
 	defer c.ui.Close()
 
 	c.setupBindings()
 
 	listener, err := net.Listen("tcp", conf.NetAddr)
-	defer listener.Close()
-
 	if err != nil {
 		log.Fatal(err)
 	}
-	go http.Serve(listener, http.FileServer(FS))
-	c.ui.Load(fmt.Sprintf("http://%s", listener.Addr()))
+
+	defer func() {
+		if err := listener.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	go func() {
+		if err := http.Serve(listener, http.FileServer(FS)); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	if err = c.ui.Load(fmt.Sprintf("http://%s", listener.Addr())); err != nil {
+		log.Fatal(err)
+	}
 
 	c.ui.Wait()
 }
 
+func (c *Controller) bind(name string, f interface{}) {
+	if err := c.ui.Bind(name, f); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (c *Controller) setupBindings() {
-	c.ui.Bind("send", c.bindings.Send)
+	c.bind("goSend", c.bindings.Send)
+	c.bind("goGetText", c.bindings.GetText)
 }
