@@ -45,6 +45,7 @@
                 <div class="m-4">
                     <div id="out-message"></div>
                     <div class="input-group">
+                        <label for="inp-message">Send: </label>
                         <input type="text" class="form-control" id="inp-message" placeholder="Text">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" id="btn-send" type="button">send</button>
@@ -66,7 +67,7 @@
             btnSend.addEventListener('click', async () => {
                 let text = txtInput.value;
 
-                await goSend(text); // Call Go function
+                await goSend(text);
 
                 render();
             });
