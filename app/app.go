@@ -7,7 +7,7 @@ import (
 )
 
 type App struct {
-	ui     ui.Controller
+	ui     *ui.Controller
 	client xmpp.Client
 }
 
@@ -25,7 +25,7 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	a.ui = *uc
+	a.ui = uc
 	return a, nil
 }
 
