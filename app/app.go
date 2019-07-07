@@ -7,8 +7,9 @@ import (
 )
 
 type App struct {
-	ui     ui.Controller
-	client *xmpp.Client
+	ui       ui.Controller
+	client   *xmpp.Client
+	loggedIn bool
 }
 
 func New() (*App, error) {
@@ -40,10 +41,16 @@ func (a *App) Run() {
 }
 
 func (a *App) send(text string) {
+	if !a.loggedIn {
+		panic("This function should never be called if client is not logged in.")
+	}
+
 	a.ui.AppendHistory("Me: " + text)
 	// TODO: send message via xmpp
 }
 
 func (a *App) login(server, username, password string) {
+	// TODO: check if login works and start xmpp client here (remove it from New() and remove Listen from Run!)
+	a.loggedIn = true
 	a.ui.Login(server, username)
 }
