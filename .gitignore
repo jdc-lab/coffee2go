@@ -17,4 +17,4 @@ coffee2go
 *.iml
 
 # Ignore generated assets files
-app/assets.*
+ui/assets.*

@@ -7,5 +7,10 @@ import (
 )
 
 func main() {
-	app.New([]string{}...).Run()
+	a, err := app.New()
+	if err != nil {
+		panic(err)
+	}
+
+	a.Run()
 }

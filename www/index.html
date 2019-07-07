@@ -7,5 +7,33 @@
     </head>
     <body onload="run()">
         <h2>Drink Coffee2Go and chat with XMPP.</h2>
+        <div id="chat">
+            <div id="messages"></div>
+            <div id="input">
+                <input type="text" id="inp-message" name="Message" minlength="4" maxlength="8" size="10">
+
+                <button type="button" id="btn-send">Send</button>
+            </div>
+        </div>
+
+        <!-- Connect UI actions to Go functions -->
+        <script>
+            const btnSend = document.querySelector('#btn-send');
+            const txtInput = document.querySelector("#inp-message");
+
+            const render = async () => {
+                // Not used yet
+            };
+
+            btnSend.addEventListener('click', async () => {
+                let text = txtInput.value;
+
+                await send(text); // Call Go function
+
+                render();
+            });
+
+            render();
+        </script>
     </body>
 </html>

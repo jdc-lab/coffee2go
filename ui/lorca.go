@@ -1,13 +1,14 @@
 package ui
 
 import (
+	"github.com/jdc-lab/coffee2go/conf"
+	"github.com/zserge/lorca"
 	"os"
 	"os/signal"
-
-	"github.com/zserge/lorca"
+	"runtime"
 )
 
-type Desktop interface {
+type ui interface {
 	Bind(name string, f interface{}) error
 	Load(url string) error
 	Wait()
@@ -18,7 +19,11 @@ type Lorca struct {
 	inner lorca.UI
 }
 
-func New(width, height int, args ...string) (*Lorca, error) {
+func NewLorca(width, height int, args ...string) (*Lorca, error) {
+	if runtime.GOOS == "linux" {
+		args = append(args, conf.LinuxAppendArgs)
+	}
+
 	ui, err := lorca.New("", "", width, height, args...)
 
 	if err != nil {

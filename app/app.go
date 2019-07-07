@@ -1,51 +1,38 @@
 package app
 
 import (
-	"fmt"
-	"log"
-	"net"
-	"net/http"
-	"runtime"
-
-	"github.com/mattn/go-xmpp"
-
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/ui"
+	"github.com/mattn/go-xmpp"
 )
 
-type app struct {
-	ui     ui.Desktop
+type App struct {
+	ui     ui.Controller
 	client xmpp.Client
 }
 
-func New(args ...string) *app {
-	a := &app{}
+func New() (*App, error) {
+	a := &App{}
 
-	if runtime.GOOS == "linux" {
-		args = append(args, conf.LinuxAppendArgs)
-	}
+	var uc *ui.Controller
 	var err error
 
-	if a.ui, err = ui.New(conf.Width, conf.Height, args...); err != nil {
-		log.Fatal(err)
+	bindings := ui.Bindings{
+		Send: a.Send,
 	}
-	return a
+
+	if uc, err = ui.NewController(conf.Width, conf.Height, bindings); err != nil {
+		return nil, err
+	}
+
+	a.ui = *uc
+	return a, nil
 }
 
-func (a *app) Run() {
-	a.ui.Bind("run", func() {
-		log.Printf("Starting UI")
-	})
-	defer a.ui.Close()
+func (a *App) Run() {
+	a.ui.Run()
+}
 
-	listener, err := net.Listen("tcp", conf.NetAddr)
-	defer listener.Close()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	go http.Serve(listener, http.FileServer(FS))
-	a.ui.Load(fmt.Sprintf("http://%s", listener.Addr()))
-
-	a.ui.Wait()
+func (a *App) Send(text string) {
+	println("SEND " + text)
 }
