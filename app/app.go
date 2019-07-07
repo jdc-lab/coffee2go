@@ -25,16 +25,14 @@ func New() (*App, error) {
 	var uc *ui.Controller
 	var err error
 
-	bindings := ui.Bindings{
-		Send:  a.send,
-		Login: a.login,
-	}
-
-	if uc, err = ui.NewController(conf.Width, conf.Height, bindings); err != nil {
+	if uc, err = ui.NewController(conf.Width, conf.Height); err != nil {
 		return nil, err
 	}
 
 	a.ui = *uc
+
+	a.ui.Bind("Send", a.send)
+	a.ui.Bind("Login", a.login)
 
 	if a.client, err = xmpp.NewClient("127.0.0.1:5223", "jh@localhost.localdomain", "jh", true); err != nil {
 		return nil, err

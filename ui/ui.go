@@ -9,18 +9,12 @@ import (
 	"github.com/jdc-lab/coffee2go/conf"
 )
 
-type Bindings struct {
-	Send  func(text string)
-	Login func(server, username, password string)
-}
-
 type Controller struct {
 	ui       ui
-	bindings Bindings
 	listener net.Listener
 }
 
-func NewController(width int, height int, bindings Bindings) (*Controller, error) {
+func NewController(width int, height int) (*Controller, error) {
 	c := &Controller{}
 
 	var err error
@@ -28,8 +22,6 @@ func NewController(width int, height int, bindings Bindings) (*Controller, error
 	if c.ui, err = NewLorca(width, height); err != nil {
 		return nil, err
 	}
-
-	c.bindings = bindings
 
 	return c, nil
 }
@@ -41,8 +33,6 @@ func (c *Controller) Run() {
 		log.Fatal(err)
 	}
 	defer c.ui.Close()
-
-	c.setupBindings()
 
 	var err error
 
@@ -70,15 +60,10 @@ func (c *Controller) Run() {
 	c.ui.Wait()
 }
 
-func (c *Controller) bind(name string, f interface{}) {
-	if err := c.ui.Bind(name, f); err != nil {
+func (c *Controller) Bind(name string, f interface{}) {
+	if err := c.ui.Bind("go"+name, f); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func (c *Controller) setupBindings() {
-	c.bind("goSend", c.bindings.Send)
-	c.bind("goLogin", c.bindings.Login)
 }
 
 func (c *Controller) AppendHistory(history string) {
