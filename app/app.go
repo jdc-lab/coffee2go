@@ -13,10 +13,12 @@ type App struct {
 	client     *xmpp.Client
 	roster     []xmpp.Item
 	currentJid string
+	histories  map[string][]string
 }
 
 func New(server, username, password string) (*App, error) {
 	a := &App{}
+	a.histories = make(map[string][]string)
 
 	var uc *ui.Controller
 	var err error
@@ -68,9 +70,9 @@ func (a *App) login(server, username, password string) {
 func (a *App) afterAppUiLoaded() {
 	log.Printf("Starting App UI")
 
-	a.client.Listen(a.ui.AppendHistory)
-	a.roster = a.client.RefreshRoster()
+	a.client.Listen(a.onMsgRecv)
 
+	a.roster = a.client.RefreshRoster()
 	a.ui.BuildRoster(a.roster)
 
 	// set first one as current selected
@@ -78,4 +80,20 @@ func (a *App) afterAppUiLoaded() {
 		a.currentJid = a.roster[0].Jid
 	}
 	a.ui.Select(a.currentJid)
+}
+
+func (a *App) onMsgRecv(msg xmpp.Chat) {
+
+	// If the chat history (identified by Remote name) exist,
+	// append the new message text to the history.
+	if h, ok := a.histories[msg.Remote]; ok {
+		h = append(h, msg.Text)
+	} else {
+		// Otherwise, create a new history.
+		a.histories[msg.Remote] = []string{
+			msg.Text,
+		}
+	}
+
+	a.ui.AppendHistory(msg.Text)
 }
