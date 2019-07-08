@@ -28,13 +28,17 @@ func New() (*App, error) {
 	// setup needed bindings (note: "go" is appended to each name)
 	a.ui.Bind("Send", a.send)
 	a.ui.Bind("Login", a.login)
-	//"127.0.0.1:5223", "jh@localhost.localdomain", "jh"
 
 	return a, nil
 }
 
 func (a *App) Run(server, username, password string) {
-	a.ui.Run(server, username, password)
+	a.ui.Run(func() {
+		log.Printf("Starting UI")
+		if server != "" || username != "" || password != "" {
+			a.ui.PrefillForm(server, username, password)
+		}
+	})
 }
 
 func (a *App) send(text string) {
