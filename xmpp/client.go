@@ -2,6 +2,7 @@ package xmpp
 
 import (
 	"crypto/tls"
+	"encoding/xml"
 	"fmt"
 	"log"
 	"strings"
@@ -9,9 +10,22 @@ import (
 	"github.com/mattn/go-xmpp"
 )
 
+type item struct {
+	Jid          string   `xml:"jid,attr"`
+	Name         string   `xml:"name,attr"`
+	Subscription string   `xml:"subscription,attr"`
+	Group        []string `xml:"group"`
+}
+
+type query struct {
+	Xmlns string `xml:"xmlns,attr"`
+	Ver   string `xml:"ver,attr"`
+	Items []item `xml:"item"`
+}
+
 type Client struct {
 	xmpp.Client
-	roster chan xmpp.Roster
+	roster chan []item
 }
 
 func serverName(host string) string {
@@ -44,7 +58,7 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 
 	return &Client{
 		*c,
-		make(chan xmpp.Roster),
+		make(chan []item),
 	}, nil
 }
 
@@ -67,9 +81,24 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 				fmt.Println("Not supported yet")
 			case xmpp.Roster:
 				fmt.Println("Roster: ", v)
-				c.roster <- v
 			case xmpp.IQ:
-				fmt.Println(v)
+				if v.Type == "result" {
+					// parse query xml
+					var q query
+					err := xml.Unmarshal(v.Query, &q)
+					if err != nil {
+						fmt.Printf("error: %v", err)
+						return
+					}
+
+					switch q.Xmlns {
+					case "jabber:iq:roster":
+						c.roster <- q.Items
+					default:
+						fmt.Println("Not supported yet", q)
+					}
+				}
+
 			default: //
 				fmt.Println("Not supported yet")
 			}
@@ -77,15 +106,14 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 	}()
 }
 
-func (c *Client) RefreshRoster() {
+func (c *Client) RefreshRoster() []item {
 	fmt.Println("try roster ")
 	if err := c.Roster(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("lol")
 	roster := <-c.roster
-	fmt.Println("lal")
-	fmt.Println("lL ", roster)
+
+	return roster
 }
 
 func (c *Client) Send() {
