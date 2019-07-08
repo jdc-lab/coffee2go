@@ -56,56 +56,7 @@
                     All known contacts (XMPP Roster).
                 -->
                 <h6 class="d-block text-center text-light pt-4 pb-3">My Contacts</h6>
-                <div id="contacts" class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-success mr-2"></span>Lisa Espresso</h6>
-                            <small>25 min ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-light mr-2"></span>Peter Portioli</h6>
-                            <small class="text-muted">2 hours ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-success mr-2"></span>Carla Coffee</h6>
-                            <small>3 hours ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-warning mr-2"></span>Felix Arabica</h6>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-success mr-2"></span>Lisa Espresso</h6>
-                            <small>25 min ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-light mr-2"></span>Peter Portioli</h6>
-                            <small class="text-muted">2 hours ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-danger mr-2"></span>Carla Coffee</h6>
-                            <small>3 hours ago</small>
-                        </div>
-                    </a>
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1"><span class="status bg-light mr-2"></span>Felix Arabica</h6>
-                            <small class="text-muted">3 days ago</small>
-                        </div>
-                    </a>
-                </div>
+                <div id="roster" class="list-group list-group-flush"></div>
             </div>
 
             <!--
@@ -172,9 +123,9 @@
                 -->
                 <div class="bg-white p-2 border-top" id="write-msg">
                     <div class="input-group">
-                        <input type="text" class="form-control py-4 bg-light" placeholder="Write a message">
+                        <input type="text" class="form-control py-4 bg-light" id="inp-message" placeholder="Write a message">
                         <div class="input-group-append">
-                            <button class="btn btn-success px-3" type="button"><i class="fas fa-paper-plane"></i></button>
+                            <button class="btn btn-success px-3" id="btn-send" type="button"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -196,14 +147,27 @@
                 await goSend(text);
             });
 
-            // Functions called from GO.
+            // Functions called from Go.
             appendHistory = function (message) {
-
                 let newHistory = document.createElement('div');
                 newHistory.innerText = message;
 
                 history.appendChild(newHistory)
             };
+
+            addContact = function(jid, name, sub) {
+                let e = `
+                    <a class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1"><span class="status bg-success mr-2"></span>${name}</h6>
+                            <small>${jid}</small>
+                        </div>
+                    </a>
+                `;
+
+                let roster = document.getElementById('roster');
+                roster.insertAdjacentHTML('afterbegin', e);
+            }
         </script>
     </body>
 

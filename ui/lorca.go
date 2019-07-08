@@ -105,7 +105,7 @@ func (l *Lorca) BuildRoster(contacts []xmpp.Item) {
 	for _, c := range contacts {
 		fn := fmt.Sprintf(`addContact(%q, %q, %q)`, c.Jid, c.Name, c.Subscription)
 		l.inner.Eval(fn)
-		fmt.Printf("%s", c.Jid)
+		fmt.Printf("\nJID: %s\n", c.Jid)
 	}
 }
 
