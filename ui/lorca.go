@@ -20,7 +20,7 @@ type ui interface {
 	Run()
 
 	// methods to execute coffee2go specific actions
-	AppendHistory(history string)
+	AppendHistory(bool, string)
 	PrefillForm(server, username, password string)
 	Login(server string, username string)
 	BuildRoster([]xmpp.Item)
@@ -87,8 +87,15 @@ func (l *Lorca) Close() {
 	l.inner.Close()
 }
 
-func (l *Lorca) AppendHistory(history string) {
-	l.inner.Eval(fmt.Sprintf(`appendHistory(%q)`, history))
+func (l *Lorca) AppendHistory(fromRemote bool, history string) {
+	var fromRemoteArg string
+
+	if fromRemote {
+		fromRemoteArg = "true"
+	} else {
+		fromRemoteArg = "false"
+	}
+	l.inner.Eval(fmt.Sprintf(`appendToHistory(%s, %q)`, fromRemoteArg, history))
 }
 
 func (l *Lorca) PrefillForm(server, username, password string) {

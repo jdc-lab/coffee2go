@@ -64,7 +64,7 @@ func (a *App) send(text string) {
 		}
 	}
 
-	a.ui.AppendHistory("Me: " + text)
+	a.ui.AppendHistory(false, text)
 	// TODO: send message via xmpp
 }
 
@@ -107,5 +107,5 @@ func (a *App) onMsgRecv(msg xmpp.Chat) {
 		}
 	}
 
-	a.ui.AppendHistory(msg.Text)
+	a.ui.AppendHistory(true, msg.Text)
 }
