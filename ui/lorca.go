@@ -10,6 +10,7 @@ import (
 	"runtime"
 
 	"github.com/jdc-lab/coffee2go/conf"
+	"github.com/jdc-lab/coffee2go/xmpp"
 	"github.com/zserge/lorca"
 )
 
@@ -22,6 +23,7 @@ type ui interface {
 	AppendHistory(history string)
 	PrefillForm(server, username, password string)
 	Login(server string, username string)
+	BuildRoster([]xmpp.Item)
 }
 
 type Lorca struct {
@@ -96,6 +98,15 @@ func (l *Lorca) AppendHistory(history string) {
 func (l *Lorca) PrefillForm(server, username, password string) {
 	fn := fmt.Sprintf(`prefillForm(%q, %q, %q)`, server, username, password)
 	l.inner.Eval(fn)
+}
+
+func (l *Lorca) BuildRoster(contacts []xmpp.Item) {
+	fmt.Println("Building roster")
+	for _, c := range contacts {
+		fn := fmt.Sprintf(`addContact(%q, %q, %q)`, c.Jid, c.Name, c.Subscription)
+		l.inner.Eval(fn)
+		fmt.Printf("%s", c.Jid)
+	}
 }
 
 // Login just switches from Login screen to main screen
