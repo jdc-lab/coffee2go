@@ -150,8 +150,7 @@
             function escape(val) {
                 let escaped = document.createElement('span');
                 escaped.innerText = val;
-
-                return escaped.outerHTML
+                return escaped.innerHTML;
             }
 
             // Functions called from Go.
@@ -161,7 +160,7 @@
 
                 history.appendChild(newHistory);
                 history.scrollTop = history.scrollHeight;
-            };
+            }
 
             function addContact(jid, name, sub) {
                 jid = escape(jid);
@@ -180,11 +179,11 @@
                 let roster = document.getElementById('roster');
 
                 roster.insertAdjacentHTML('afterbegin', e);
-            };
+            }
 
             function select(jid) {
                 console.log("select " + jid)
-            };
+            }
         </script>
     </body>
 
