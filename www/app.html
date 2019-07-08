@@ -152,11 +152,11 @@
                 let newHistory = document.createElement('div');
                 newHistory.innerText = message;
 
-                history.appendChild(newHistory)
+                history.appendChild(newHistory);
+                history.scrollTop = history.scrollHeight;
             };
 
             addContact = function(jid, name, sub) {
-                console.log("lol " + jid)
                 let e = `
                     <a class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
