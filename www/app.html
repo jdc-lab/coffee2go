@@ -147,6 +147,13 @@
                 await goSend(text);
             });
 
+            function escape(val) {
+                let escaped = document.createElement('span');
+                escaped.innerText = val;
+
+                return escaped.outerHTML
+            }
+
             // Functions called from Go.
             function appendHistory(message) {
                 let newHistory = document.createElement('div');
@@ -157,6 +164,10 @@
             };
 
             function addContact(jid, name, sub) {
+                jid = escape(jid);
+                name = escape(name);
+                sub = escape(sub);
+
                 let e = `
                     <a class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
