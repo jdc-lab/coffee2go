@@ -17,6 +17,10 @@ type Item struct {
 	Group        []string `xml:"group"`
 }
 
+type Chat struct {
+	xmpp.Chat
+}
+
 type query struct {
 	Xmlns string `xml:"xmlns,attr"`
 	Ver   string `xml:"ver,attr"`
@@ -62,7 +66,7 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 	}, nil
 }
 
-func (c *Client) Listen(msgRecvFunc func(message string)) {
+func (c *Client) Listen(msgRecvFunc func(Chat)) {
 	go func() {
 		for {
 			chat, err := c.Recv()
@@ -74,7 +78,7 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 			case xmpp.Chat:
 
 				if len(v.Text) > 0 {
-					msgRecvFunc(v.Remote + ": " + v.Text)
+					msgRecvFunc(Chat{v})
 				}
 
 			case xmpp.Presence:
