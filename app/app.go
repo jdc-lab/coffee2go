@@ -9,11 +9,13 @@ import (
 )
 
 type App struct {
-	ui     ui.Controller
-	client *xmpp.Client
+	ui         ui.Controller
+	client     *xmpp.Client
+	roster     []xmpp.Item
+	currentJid string
 }
 
-func New() (*App, error) {
+func New(server, username, password string) (*App, error) {
 	a := &App{}
 
 	var uc *ui.Controller
@@ -28,17 +30,19 @@ func New() (*App, error) {
 	// setup needed bindings (note: "go" is appended to each name)
 	a.ui.Bind("Send", a.send)
 	a.ui.Bind("Login", a.login)
-
-	return a, nil
-}
-
-func (a *App) Run(server, username, password string) {
-	a.ui.Run(func() {
-		log.Printf("Starting UI")
+	a.ui.Bind("OnLoginLoaded", func() {
+		log.Printf("Starting Login UI")
 		if server != "" || username != "" || password != "" {
 			a.ui.PrefillForm(server, username, password)
 		}
 	})
+	a.ui.Bind("OnAppLoaded", a.afterAppUiLoaded)
+
+	return a, nil
+}
+
+func (a *App) Run() {
+	a.ui.Run()
 }
 
 func (a *App) send(text string) {
@@ -57,11 +61,21 @@ func (a *App) login(server, username, password string) {
 		// TODO: pass message to GUI
 	} else {
 		a.client = client
-		a.client.Listen(a.ui.AppendHistory)
-
 		a.ui.Login(server, username)
-
-		roster := a.client.RefreshRoster()
-		a.ui.BuildRoster(roster)
 	}
+}
+
+func (a *App) afterAppUiLoaded() {
+	log.Printf("Starting App UI")
+
+	a.client.Listen(a.ui.AppendHistory)
+	a.roster = a.client.RefreshRoster()
+
+	a.ui.BuildRoster(a.roster)
+
+	// set first one as current selected
+	if len(a.roster) > 0 {
+		a.currentJid = a.roster[0].Jid
+	}
+	a.ui.Select(a.currentJid)
 }

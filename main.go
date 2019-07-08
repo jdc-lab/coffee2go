@@ -8,17 +8,16 @@ import (
 )
 
 func main() {
-	a, err := app.New()
-
-	if err != nil {
-		panic(err)
-	}
-
 	server := flag.String("server", "", `The server to connect with.`)
 	username := flag.String("username", "", `The XMPP username.`)
 	password := flag.String("password", "", `The corresponding password.`)
 
 	flag.Parse()
 
-	a.Run(*server, *username, *password)
+	a, err := app.New(*server, *username, *password)
+
+	if err != nil {
+		panic(err)
+	}
+	a.Run()
 }

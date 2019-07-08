@@ -17,13 +17,14 @@ import (
 type ui interface {
 	Bind(name string, f interface{}) error
 	Close()
-	Run(onLoaded func())
+	Run()
 
 	// methods to execute coffee2go specific actions
 	AppendHistory(history string)
 	PrefillForm(server, username, password string)
 	Login(server string, username string)
 	BuildRoster([]xmpp.Item)
+	Select(jid string)
 }
 
 type Lorca struct {
@@ -48,12 +49,7 @@ func NewLorca(width, height int, args ...string) (*Lorca, error) {
 	return lorca, nil
 }
 
-func (l *Lorca) Run(onLoaded func()) {
-	// Event when ui is started
-	if err := l.Bind("run", onLoaded); err != nil {
-		log.Fatal(err)
-	}
-
+func (l *Lorca) Run() {
 	defer l.Close()
 
 	var err error
@@ -103,10 +99,15 @@ func (l *Lorca) PrefillForm(server, username, password string) {
 func (l *Lorca) BuildRoster(contacts []xmpp.Item) {
 	fmt.Println("Building roster")
 	for _, c := range contacts {
+		fmt.Println("add contact", c)
 		fn := fmt.Sprintf(`addContact(%q, %q, %q)`, c.Jid, c.Name, c.Subscription)
 		l.inner.Eval(fn)
 		fmt.Printf("\nJID: %s\n", c.Jid)
 	}
+}
+
+func (l *Lorca) Select(jid string) {
+	l.inner.Eval(fmt.Sprintf(`select(%q)`, jid))
 }
 
 // Login just switches from Login screen to main screen
