@@ -3,9 +3,10 @@ package xmpp
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/mattn/go-xmpp"
 	"log"
 	"strings"
+
+	"github.com/mattn/go-xmpp"
 )
 
 type Chat struct {
