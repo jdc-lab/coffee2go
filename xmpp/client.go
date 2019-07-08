@@ -76,15 +76,15 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 				if len(v.Text) > 0 {
 					msgRecvFunc(v.Remote + ": " + v.Text)
 				}
+
 			case xmpp.Presence:
-				//fmt.Println(v.From, v.Show)
-				fmt.Println("Not supported yet")
-			case xmpp.Roster:
-				fmt.Println("Roster: ", v)
+				fmt.Println("Not supported yet", v.From, v.Show)
+
 			case xmpp.IQ:
 				if v.Type == "result" {
 					// parse query xml
 					var q query
+
 					err := xml.Unmarshal(v.Query, &q)
 					if err != nil {
 						fmt.Printf("error: %v", err)
@@ -99,7 +99,7 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 					}
 				}
 
-			default: //
+			default:
 				fmt.Println("Not supported yet")
 			}
 		}
@@ -107,7 +107,6 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 }
 
 func (c *Client) RefreshRoster() []item {
-	fmt.Println("try roster ")
 	if err := c.Roster(); err != nil {
 		fmt.Println(err)
 	}
