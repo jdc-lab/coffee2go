@@ -58,8 +58,10 @@ func (a *App) login(server, username, password string) {
 	} else {
 		a.client = client
 		a.client.Listen(a.ui.AppendHistory)
+
 		a.ui.Login(server, username)
-		a.client.RefreshRoster()
-		// TODO: setup Roster
+
+		roster := a.client.RefreshRoster()
+		a.ui.BuildRoster(roster)
 	}
 }

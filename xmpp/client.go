@@ -10,7 +10,7 @@ import (
 	"github.com/mattn/go-xmpp"
 )
 
-type item struct {
+type Item struct {
 	Jid          string   `xml:"jid,attr"`
 	Name         string   `xml:"name,attr"`
 	Subscription string   `xml:"subscription,attr"`
@@ -20,12 +20,12 @@ type item struct {
 type query struct {
 	Xmlns string `xml:"xmlns,attr"`
 	Ver   string `xml:"ver,attr"`
-	Items []item `xml:"item"`
+	Items []Item `xml:"item"`
 }
 
 type Client struct {
 	xmpp.Client
-	roster chan []item
+	roster chan []Item
 }
 
 func serverName(host string) string {
@@ -58,7 +58,7 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 
 	return &Client{
 		*c,
-		make(chan []item),
+		make(chan []Item),
 	}, nil
 }
 
@@ -106,8 +106,7 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 	}()
 }
 
-func (c *Client) RefreshRoster() []item {
-	fmt.Println("try roster ")
+func (c *Client) RefreshRoster() []Item {
 	if err := c.Roster(); err != nil {
 		fmt.Println(err)
 	}
