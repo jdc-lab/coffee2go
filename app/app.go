@@ -59,7 +59,7 @@ func (a *App) login(server, username, password string) {
 		a.client = client
 		a.client.Listen(a.ui.AppendHistory)
 		a.ui.Login(server, username)
-
+		a.client.RefreshRoster()
 		// TODO: setup Roster
 	}
 }

@@ -8,20 +8,9 @@ import (
 	"strings"
 )
 
-type Chat struct {
-	xmpp.Chat
-}
-
-type Presence struct {
-	xmpp.Presence
-}
-
 type Client struct {
 	xmpp.Client
-}
-
-type Roster struct {
-	xmpp.Client
+	roster chan xmpp.Roster
 }
 
 func serverName(host string) string {
@@ -52,7 +41,10 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 		return nil, err
 	}
 
-	return &Client{*c}, nil
+	return &Client{
+		*c,
+		make(chan xmpp.Roster),
+	}, nil
 }
 
 func (c *Client) Listen(msgRecvFunc func(message string)) {
@@ -73,12 +65,26 @@ func (c *Client) Listen(msgRecvFunc func(message string)) {
 				//fmt.Println(v.From, v.Show)
 				fmt.Println("Not supported yet")
 			case xmpp.Roster:
+				fmt.Println("Roster: ", v)
+				c.roster <- v
+			case xmpp.IQ:
 				fmt.Println(v)
 			default: //
 				fmt.Println("Not supported yet")
 			}
 		}
 	}()
+}
+
+func (c *Client) RefreshRoster() {
+	fmt.Println("try roster ")
+	if err := c.Roster(); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("lol")
+	roster := <-c.roster
+	fmt.Println("lal")
+	fmt.Println("lL ", roster)
 }
 
 func (c *Client) Send() {
