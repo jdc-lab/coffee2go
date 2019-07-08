@@ -52,6 +52,18 @@ func (a *App) send(text string) {
 		panic("This function should never be called if client is not logged in.")
 	}
 	a.client.Send()
+
+	// If the chat history (identified by JID) exists,
+	// append the new message text to the history.
+	if h, ok := a.histories[a.currentJid]; ok {
+		h = append(h, text)
+	} else {
+		// Otherwise, create a new history.
+		a.histories[a.currentJid] = []string{
+			text,
+		}
+	}
+
 	a.ui.AppendHistory("Me: " + text)
 	// TODO: send message via xmpp
 }
