@@ -141,6 +141,7 @@
 
                 let history = document.getElementById('history');
                 history.insertAdjacentHTML('beforeend', e);
+                history.scrollTop = history.scrollHeight;
             }
 
             function addContact(jid, name, sub) {
