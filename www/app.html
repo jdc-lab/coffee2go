@@ -6,6 +6,7 @@
         <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/default.css">
+        <script src="https://kit.fontawesome.com/a03d5ce0e2.js"></script>
     </head>
     
     <body class="h-100" onload="run()">
@@ -110,22 +111,79 @@
             <!--
                 Main column holding the current conversation.
             -->
-            <div class="col-8 h-100 bg-light">
-                <div class="m-4">
-                    <div id="history"></div>
-                    <div class="input-group">
-                        <label for="inp-message">Send: </label>
-                        <input type="text" class="form-control" id="inp-message" placeholder="Text">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" id="btn-send" type="button">send</button>
+            <div class="col-8 p-0 h-100 bg-light" id="col-right">
+
+                <!--
+                    Chat head with remote name.
+                -->
+                <div class="p-2 bg-white border-bottom">
+                    <div class="row m-0">
+                        <div class="col-3 col-md-2 p-0 pl-2">
+                            <img class="rounded-lg user-avatar" src="img/lisa-espresso.png" alt="Lisa Espresso">
+                        </div>
+                        <div class="col-9 col-md-10 p-0">
+                            <h4 class="text-dark m-0"><i>Lisa Espresso</i></h4>
+                            <small>
+                                <span class="status bg-success mr-2"></span>ONLINE
+                                <span class="text-muted">&ndash; <i>&quot;Trinke gerade Coffee2Go und bin erreichbar.&quot;</i></span>
+                            </small>
                         </div>
                     </div>
                 </div>
+
+                <!--
+                    The actual chat history.
+                -->
+                <div id="history">
+                    <div class="bg-primary rounded-lg m-3 px-3 py-2 w-75 msg-text mr-auto text-white">
+                        Hey!
+                    </div>
+                    <div class="bg-white rounded-lg m-3 px-3 py-2 w-75 msg-text ml-auto">
+                        Hallo :)
+                    </div>
+                    <div class="bg-primary rounded-lg m-3 px-3 py-2 w-75 msg-text mr-auto text-white">
+                        Willst du heute einen Espresso trinken?
+                    </div>
+                    <div class="bg-white rounded-lg m-3 px-3 py-2 w-75 msg-text ml-auto">
+                        Gerne! Welche Maschine hast du denn?
+                    </div>
+                    <div class="bg-primary rounded-lg m-3 px-3 py-2 w-75 msg-text mr-auto text-white">
+                        Ich habe eine ECM Classika II, mit der ich eigentlich t&auml;glich Espresso mache. Ich beherrsche mein Handwerk inzwischen ganz gut :D
+                    </div>
+                    <div class="bg-white rounded-lg m-3 px-3 py-2 w-75 msg-text ml-auto">
+                        Na das klingt doch gut. Kaufst du trotzdem noch Coffee2Go beim B&auml;cker? Wenn du nun eine Espressomaschine hast, k&ouml;nntest du ja unterwegs Geld sparen.
+                    </div>
+                    <div class="bg-primary rounded-lg m-3 px-3 py-2 w-75 msg-text mr-auto text-white">
+                        Ja, ich k&ouml;nnte Geld sparen &ndash; mach ich aber nicht. Ich trinke nach wie vor auch gerne unterwegs einen Kaffee...
+                    </div>
+                    <div class="bg-white rounded-lg m-3 px-3 py-2 w-75 msg-text ml-auto">
+                        Nicht schlecht!
+                    </div>
+                    <div class="bg-primary rounded-lg m-3 px-3 py-2 w-75 msg-text mr-auto text-white">
+                        Also bis später!
+                    </div>
+                    <div class="bg-white rounded-lg m-3 px-3 py-2 w-75 msg-text ml-auto">
+                        Bis dann :)
+                    </div>
+                </div>
+
+                <!--
+                    Area for sending and writing messages.
+                -->
+                <div class="bg-white p-2 border-top" id="write-msg">
+                    <div class="input-group">
+                        <input type="text" class="form-control py-4 bg-light" placeholder="Write a message">
+                        <div class="input-group-append">
+                            <button class="btn btn-success px-3" type="button"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <!--
-            JavaScript as bridge between Go and JS
+            JavaScript as bridge between Go and JS.
         -->
         <script>
             const sendBtn = document.querySelector('#btn-send');
@@ -138,7 +196,7 @@
                 await goSend(text);
             });
 
-            // Functions called from GO
+            // Functions called from GO.
             appendHistory = function (message) {
 
                 let newHistory = document.createElement('div');

@@ -11,6 +11,21 @@
     overflow-y: scroll;
 }
 
+#history {
+    max-height: calc(100% - 142px);
+    overflow-y: scroll;
+}
+
+#write-msg {
+    width: calc(100% - 33.333333%);
+    position: fixed;
+    bottom: 0;
+}
+
+.msg-text {
+    font-size: .905em;
+}
+
 .text-500 {
     font-weight: 500;
 }
@@ -43,18 +58,25 @@
 
 .input:active,
 .input:focus {
-    outline: none !important;
     box-shadow: none !important;
+    outline: 0px !important;
+    -webkit-appearance: none !important;
 }
 
 .list-group-item {
     cursor: pointer;
-    border-color: #EDEEEF;
+    border-color: #EAECEF;
 }
 
 .list-group-item.active h6,
 .list-group-item.active small {
-    color: #fff !important;
+    color: #FFF !important;
+}
+
+.border-top,
+.border-bottom,
+.form-control {
+    border-color: #EAECEF !important;
 }
 
 .status {
@@ -68,12 +90,16 @@
     border: none;
 }
 
+.user-avatar {
+    width: 58px;
+}
+
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #F8F9FA;
+    background: #EAECEF;
 }
 
 ::-webkit-scrollbar-thumb {
