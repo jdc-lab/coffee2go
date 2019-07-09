@@ -124,8 +124,8 @@
 
             // Functions called from Go.
 
-            function appendToHistory(fromRemote, message) {
-                message = escape(message)
+            function appendToHistory(fromRemote, text) {
+                text = escape(text)
                 
                 if (fromRemote) {
                     var classes = "bg-primary mr-auto text-white";
@@ -135,7 +135,7 @@
 
                 let e = `
                     <div class="rounded-lg m-3 px-3 py-2 w-75 msg-text ${classes}">
-                        ${message}
+                        ${text}
                     </div>
                 `;
 
@@ -165,7 +165,12 @@
 
             const select = async function(jid) {
                 let conversation = await goLoadConversation(jid);
+
                 console.log(conversation);
+                
+                for (msg of conversation.History) {
+                    appendToHistory(msg.FromRemote, msg.Text);
+                }
             }
         </script>
     </body>
