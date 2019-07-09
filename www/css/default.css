@@ -24,6 +24,7 @@
 
 .msg-text {
     font-size: .905em;
+    word-break: break-word;
 }
 
 .text-500 {
