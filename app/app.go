@@ -41,5 +41,3 @@ func (a *app) Run(server, username, password string) {
 		a.active.open()
 	})
 }
-
-func (a *App) conversationData(jid string)
