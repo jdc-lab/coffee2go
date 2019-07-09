@@ -9,9 +9,9 @@ import (
 	"os/signal"
 	"runtime"
 
+	"github.com/aligator/lorca"
 	"github.com/jdc-lab/coffee2go/conf"
 	"github.com/jdc-lab/coffee2go/xmpp"
-	"github.com/zserge/lorca"
 )
 
 type ui interface {
