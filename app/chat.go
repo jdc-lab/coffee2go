@@ -23,7 +23,7 @@ func newChat(a *app, client *xmpp.Client, servername, username string) *chat {
 
 	// setup needed bindings (note: "go" is appended to each name)
 	c.ui.Bind("Send", c.send)
-	c.ui.Bind("OnAppLoaded", c.afterAppUiLoaded)
+	c.ui.Bind("OnChatLoaded", c.onChatLoaded)
 	c.ui.Bind("LoadConversation", c.loadConversation)
 
 	return &c
@@ -63,8 +63,8 @@ func (c *chat) send(text string) {
 	// TODO: send message via xmpp
 }
 
-func (c *chat) afterAppUiLoaded() {
-	log.Printf("Starting app UI")
+func (c *chat) onChatLoaded() {
+	log.Printf("\nStarting app UI\n")
 
 	c.client.Listen(c.onMsgRecv)
 
