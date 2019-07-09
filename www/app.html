@@ -9,7 +9,7 @@
         <script src="https://kit.fontawesome.com/a03d5ce0e2.js"></script>
     </head>
 
-    <body class="h-100" onload="onAppLoaded()">
+    <body class="h-100" onload="goOnAppLoaded()">
         <div class="row m-0 h-100">
 
             <!--
@@ -120,11 +120,6 @@
                 let escaped = document.createElement('span');
                 escaped.innerText = val;
                 return escaped.innerHTML;
-            }
-
-            function onAppLoaded() {
-                console.log("lllllllllllllllllllllllllllol")
-                goOnAppLoaded()
             }
 
             // Functions called from Go.
