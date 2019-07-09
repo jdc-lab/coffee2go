@@ -42,6 +42,10 @@ func (c *chat) close() {
 }
 
 func (c *chat) send(text string) {
+	if text == "" {
+		return
+	}
+
 	c.client.Send()
 
 	msg := xmpp.Message{
