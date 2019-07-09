@@ -23,6 +23,7 @@ func newChat(a *app, client *xmpp.Client, servername, username string) *chat {
 	// setup needed bindings (note: "go" is appended to each name)
 	c.ui.Bind("Send", c.send)
 	c.ui.Bind("OnAppLoaded", c.afterAppUiLoaded)
+	c.ui.Bind("LoadConversation", c.loadConversation)
 
 	return &c
 }
@@ -94,9 +95,17 @@ func (c *chat) onMsgRecv(chat xmpp.Chat) {
 		}
 	}
 
-	c.ui.AppendHistory(true, msg.Text)
+	if chat.Remote == c.currentJid {
+		c.ui.AppendHistory(true, msg.Text)
+	}
 }
 
-// func (c *chat) sendConversationData(jid string) *xmpp.Conversation {
-
-// }
+func (c *chat) loadConversation(jid string) *xmpp.Conversation {
+	if con, ok := c.conversations[jid]; ok {
+		return &con
+	} else {
+		return &xmpp.Conversation{
+			History: []xmpp.Message{},
+		}
+	}
+}
