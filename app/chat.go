@@ -1,8 +1,9 @@
 package app
 
 import (
-	"github.com/jdc-lab/coffee2go/xmpp"
 	"log"
+
+	"github.com/jdc-lab/coffee2go/xmpp"
 )
 
 type chat struct {
@@ -10,14 +11,14 @@ type chat struct {
 	client               *xmpp.Client
 	roster               []xmpp.Item
 	currentJid           string
-	histories            map[string][]string
+	conversations        map[string]xmpp.Conversation
 	servername, username string
 }
 
 func newChat(a *app, client *xmpp.Client, servername, username string) *chat {
 	c := chat{app: a, client: client, servername: servername, username: username}
 
-	c.histories = make(map[string][]string)
+	c.conversations = make(map[string]xmpp.Conversation)
 
 	// setup needed bindings (note: "go" is appended to each name)
 	c.ui.Bind("Send", c.send)
@@ -40,14 +41,19 @@ func (c *chat) send(text string) {
 	}
 	c.client.Send()
 
-	// If the chat history (identified by JID) exists,
-	// append the new message text to the history.
-	if h, ok := c.histories[c.currentJid]; ok {
-		h = append(h, text)
+	msg := xmpp.Message{
+		FromRemote: false,
+		Text:       text,
+	}
+
+	// If the conversation (identified by JID) exists,
+	// append the new message text to the conversation's history.
+	if con, ok := c.conversations[c.currentJid]; ok {
+		con.History = append(con.History, msg)
 	} else {
-		// Otherwise, create a new history.
-		c.histories[c.currentJid] = []string{
-			text,
+		// Otherwise, create a new conversation with a new history.
+		c.conversations[c.currentJid] = xmpp.Conversation{
+			History: []xmpp.Message{msg},
 		}
 	}
 
@@ -70,18 +76,27 @@ func (c *chat) afterAppUiLoaded() {
 	c.ui.Select(c.currentJid)
 }
 
-func (c *chat) onMsgRecv(msg xmpp.Chat) {
+func (c *chat) onMsgRecv(chat xmpp.Chat) {
 
-	// If the chat history (identified by Remote name) exist,
-	// append the new message text to the history.
-	if h, ok := c.histories[msg.Remote]; ok {
-		h = append(h, msg.Text)
+	msg := xmpp.Message{
+		FromRemote: true,
+		Text:       chat.Text,
+	}
+
+	// If the conversation (identified by remote name) exists,
+	// append the new message text to the conversation's history.
+	if con, ok := c.conversations[c.currentJid]; ok {
+		con.History = append(con.History, msg)
 	} else {
-		// Otherwise, create a new history.
-		c.histories[msg.Remote] = []string{
-			msg.Text,
+		// Otherwise, create a new conversation with a new history.
+		c.conversations[c.currentJid] = xmpp.Conversation{
+			History: []xmpp.Message{msg},
 		}
 	}
 
 	c.ui.AppendHistory(true, msg.Text)
 }
+
+// func (c *chat) sendConversationData(jid string) *xmpp.Conversation {
+
+// }
