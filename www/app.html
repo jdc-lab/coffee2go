@@ -112,7 +112,7 @@
             
             sendBtn.addEventListener('click', async () => {
                 let text = messageInp.value;
-                
+                messageInp.value = "";
                 await goSend(text);
             });
 
