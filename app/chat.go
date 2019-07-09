@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"strings"
 
 	"github.com/jdc-lab/coffee2go/xmpp"
 )
@@ -10,7 +11,7 @@ type chat struct {
 	*app
 	client               *xmpp.Client
 	roster               []xmpp.Item
-	currentJid           string
+	selectedJID          string
 	conversations        map[string]xmpp.Conversation
 	servername, username string
 }
@@ -49,11 +50,11 @@ func (c *chat) send(text string) {
 
 	// If the conversation (identified by JID) exists,
 	// append the new message text to the conversation's history.
-	if con, ok := c.conversations[c.currentJid]; ok {
+	if con, ok := c.conversations[c.selectedJID]; ok {
 		con.History = append(con.History, msg)
 	} else {
 		// Otherwise, create a new conversation with a new history.
-		c.conversations[c.currentJid] = xmpp.Conversation{
+		c.conversations[c.selectedJID] = xmpp.Conversation{
 			History: []xmpp.Message{msg},
 		}
 	}
@@ -72,9 +73,9 @@ func (c *chat) afterAppUiLoaded() {
 
 	// set first one as current selected
 	if len(c.roster) > 0 {
-		c.currentJid = c.roster[0].Jid
+		c.selectedJID = c.roster[0].Jid
 	}
-	c.ui.Select(c.currentJid)
+	c.ui.Select(c.selectedJID)
 }
 
 func (c *chat) onMsgRecv(chat xmpp.Chat) {
@@ -86,26 +87,28 @@ func (c *chat) onMsgRecv(chat xmpp.Chat) {
 
 	// If the conversation (identified by remote name) exists,
 	// append the new message text to the conversation's history.
-	if con, ok := c.conversations[c.currentJid]; ok {
+	if con, ok := c.conversations[c.selectedJID]; ok {
 		con.History = append(con.History, msg)
 	} else {
 		// Otherwise, create a new conversation with a new history.
-		c.conversations[c.currentJid] = xmpp.Conversation{
+		c.conversations[c.selectedJID] = xmpp.Conversation{
 			History: []xmpp.Message{msg},
 		}
 	}
+	remoteJID := strings.Split(chat.Remote, "/")[0]
 
-	if chat.Remote == c.currentJid {
+	if remoteJID == c.selectedJID {
 		c.ui.AppendHistory(true, msg.Text)
 	}
 }
 
 func (c *chat) loadConversation(jid string) *xmpp.Conversation {
+	c.selectedJID = jid
+
 	if con, ok := c.conversations[jid]; ok {
 		return &con
-	} else {
-		return &xmpp.Conversation{
-			History: []xmpp.Message{},
-		}
+	}
+	return &xmpp.Conversation{
+		History: []xmpp.Message{},
 	}
 }
