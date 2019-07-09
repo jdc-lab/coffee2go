@@ -116,9 +116,11 @@
                 e.preventDefault();
 
                 let text = messageInp.value;
-                messageInp.value = '';
-                
-                await goSend(text);
+
+                if (text) {
+                    messageInp.value = '';
+                    await goSend(text);
+                }
             });
 
             function escape(val) {
