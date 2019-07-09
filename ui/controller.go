@@ -24,6 +24,7 @@ func NewLorcaController(width int, height int) (*Controller, error) {
 
 func (c *Controller) Bind(name string, f interface{}) {
 	// TODO: check if f is a func
+	// TODO: wrap function  with another one which checks if we are in the correct module currently and prevents running the binding, if not
 	if err := c.ui.Bind("go"+name, f); err != nil {
 		log.Fatal(err)
 	}

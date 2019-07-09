@@ -17,14 +17,17 @@ import (
 type ui interface {
 	Bind(name string, f interface{}) error
 	Close()
-	Run()
+	Run(ready func())
 
 	// methods to execute coffee2go specific actions
 	AppendHistory(bool, string)
 	PrefillForm(server, username, password string)
-	Login(server string, username string)
 	BuildRoster([]xmpp.Item)
 	Select(jid string)
+
+	// module load methods
+	LoadLogin()
+	LoadChat(servername, username string)
 }
 
 type Lorca struct {
@@ -49,7 +52,7 @@ func NewLorca(width, height int, args ...string) (*Lorca, error) {
 	return lorca, nil
 }
 
-func (l *Lorca) Run() {
+func (l *Lorca) Run(ready func()) {
 	defer l.Close()
 
 	var err error
@@ -71,9 +74,7 @@ func (l *Lorca) Run() {
 		}
 	}()
 
-	if err = l.load(fmt.Sprintf("http://%s", l.listener.Addr())); err != nil {
-		log.Fatal(err)
-	}
+	ready()
 
 	l.wait()
 }
@@ -85,6 +86,18 @@ func (l *Lorca) Bind(name string, f interface{}) error {
 
 func (l *Lorca) Close() {
 	l.inner.Close()
+}
+
+func (l *Lorca) LoadLogin() {
+	if err := l.load(fmt.Sprintf("http://%s", l.listener.Addr())); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (l *Lorca) LoadChat(servername, username string) {
+	// TODO: server and usename needed?? (e.g. display somewhere in gui?)
+	url := fmt.Sprintf("http://%s/%s", l.listener.Addr(), conf.AppFile)
+	l.load(url)
 }
 
 func (l *Lorca) AppendHistory(fromRemote bool, history string) {
@@ -115,13 +128,6 @@ func (l *Lorca) BuildRoster(contacts []xmpp.Item) {
 
 func (l *Lorca) Select(jid string) {
 	l.inner.Eval(fmt.Sprintf(`select(%q)`, jid))
-}
-
-// Login just switches from Login screen to main screen
-func (l *Lorca) Login(server string, username string) {
-	// TODO: server and usename needed (e.g. display somewhere in gui?)
-	url := fmt.Sprintf("http://%s/%s", l.listener.Addr(), conf.AppFile)
-	l.load(url)
 }
 
 func (l *Lorca) load(url string) error {
