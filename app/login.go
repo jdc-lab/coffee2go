@@ -31,6 +31,9 @@ func (l *login) open() {
 	l.ui.LoadLogin()
 }
 
+func (l *login) close() {
+}
+
 func (l *login) afterAppUiLoaded() {
 	log.Printf("Starting login UI")
 	if l.server != "" || l.username != "" || l.password != "" {

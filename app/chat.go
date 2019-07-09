@@ -30,6 +30,10 @@ func (c *chat) open() {
 	c.ui.LoadChat(c.servername, c.username)
 }
 
+func (c *chat) close() {
+	c.client.Close()
+}
+
 func (c *chat) send(text string) {
 	if c.client == nil {
 		panic("This function should never be called if client is not logged in.")

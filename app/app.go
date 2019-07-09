@@ -1,4 +1,4 @@
-/**/ package app
+package app
 
 import (
 	"github.com/jdc-lab/coffee2go/conf"
@@ -7,6 +7,7 @@ import (
 
 type module interface {
 	open()
+	close()
 }
 
 type app struct {
@@ -27,6 +28,11 @@ func New() (*app, error) {
 	a.ui = *uc
 
 	return a, nil
+}
+
+func (a *app) changeModule(m module) {
+	a.active.close()
+	a.active = m
 }
 
 func (a *app) Run(server, username, password string) {
