@@ -31,8 +31,12 @@ func New() (*app, error) {
 }
 
 func (a *app) changeModule(m module) {
-	a.active.close()
+	if a.active != nil {
+		a.active.close()
+	}
+
 	a.active = m
+	a.active.open()
 }
 
 func (a *app) Run(server, username, password string) {

@@ -22,7 +22,7 @@ func newLogin(a *app, server, username, password string) *login {
 
 	// setup needed bindings (note: "go" is appended to each name)
 	l.ui.Bind("Login", l.login)
-	l.ui.Bind("OnLoginLoaded", l.afterAppUiLoaded)
+	l.ui.Bind("OnLoginLoaded", l.afterLoginUiLoaded)
 
 	return &l
 }
@@ -34,7 +34,7 @@ func (l *login) open() {
 func (l *login) close() {
 }
 
-func (l *login) afterAppUiLoaded() {
+func (l *login) afterLoginUiLoaded() {
 	log.Printf("Starting login UI")
 	if l.server != "" || l.username != "" || l.password != "" {
 		l.ui.PrefillForm(l.server, l.username, l.password)
@@ -48,7 +48,6 @@ func (l *login) login(server, username, password string) {
 		// TODO: pass message to GUI
 	} else {
 		c := newChat(l.app, client, server, username)
-		l.app.active = c
-		l.app.active.open()
+		l.app.changeModule(c)
 	}
 }

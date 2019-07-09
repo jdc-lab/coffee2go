@@ -33,13 +33,13 @@ func (c *chat) open() {
 }
 
 func (c *chat) close() {
-	c.client.Close()
+	log.Println("Closing chat")
+	if err := c.client.Close(); err != nil {
+		log.Println(err)
+	}
 }
 
 func (c *chat) send(text string) {
-	if c.client == nil {
-		panic("This function should never be called if client is not logged in.")
-	}
 	c.client.Send()
 
 	msg := xmpp.Message{

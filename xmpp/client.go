@@ -29,7 +29,8 @@ type query struct {
 
 type Client struct {
 	xmpp.Client
-	roster chan []Item
+	roster  chan []Item
+	closing chan bool
 }
 
 func serverName(host string) string {
@@ -63,6 +64,7 @@ func NewClient(host string, username string, password string, insecureTLS bool) 
 	return &Client{
 		*c,
 		make(chan []Item),
+		make(chan bool),
 	}, nil
 }
 
@@ -71,7 +73,9 @@ func (c *Client) Listen(msgRecvFunc func(Chat)) {
 		for {
 			chat, err := c.Recv()
 			if err != nil {
-				log.Fatal(err)
+				// close on error (e.g. connection lost, if chat closed)
+				log.Println(err)
+				return
 			}
 
 			switch v := chat.(type) {
