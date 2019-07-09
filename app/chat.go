@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -75,6 +76,7 @@ func (c *chat) onChatLoaded() {
 	if len(c.roster) > 0 {
 		c.selectedJID = c.roster[0].Jid
 	}
+	fmt.Printf("\n\n JID!!!! %s\n\n", c.roster[0].Jid)
 	c.ui.Select(c.selectedJID)
 }
 
@@ -85,17 +87,18 @@ func (c *chat) onMsgRecv(chat xmpp.Chat) {
 		Text:       chat.Text,
 	}
 
+	remoteJID := strings.Split(chat.Remote, "/")[0]
+
 	// If the conversation (identified by remote name) exists,
 	// append the new message text to the conversation's history.
-	if con, ok := c.conversations[c.selectedJID]; ok {
+	if con, ok := c.conversations[remoteJID]; ok {
 		con.History = append(con.History, msg)
 	} else {
 		// Otherwise, create a new conversation with a new history.
-		c.conversations[c.selectedJID] = xmpp.Conversation{
+		c.conversations[remoteJID] = xmpp.Conversation{
 			History: []xmpp.Message{msg},
 		}
 	}
-	remoteJID := strings.Split(chat.Remote, "/")[0]
 
 	if remoteJID == c.selectedJID {
 		c.ui.AppendHistory(true, msg.Text)
