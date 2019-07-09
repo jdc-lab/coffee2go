@@ -150,7 +150,7 @@
                 sub = escape(sub);
 
                 let e = `
-                    <a class="list-group-item list-group-item-action flex-column align-items-start">
+                    <a class="list-group-item list-group-item-action flex-column align-items-start" onclick="select('${jid}')">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1"><span class="status bg-success mr-2"></span>${name}</h6>
                             <small>${jid}</small>
@@ -163,8 +163,9 @@
                 roster.insertAdjacentHTML('afterbegin', e);
             }
 
-            function select(jid) {
-                console.log("select " + jid)
+            const select = async function(jid) {
+                let conversation = await goLoadConversation(jid);
+                console.log(conversation);
             }
         </script>
     </body>
