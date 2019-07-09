@@ -91,12 +91,14 @@
                     Area for sending and writing messages.
                 -->
                 <div class="bg-white p-2 border-top" id="write-msg">
-                    <div class="input-group">
-                        <input type="text" class="form-control py-4 bg-light" id="inp-message" placeholder="Write a message">
-                        <div class="input-group-append">
-                            <button class="btn btn-success px-3" id="btn-send" type="button"><i class="fas fa-paper-plane"></i></button>
+                    <form id="form-message">
+                        <div class="input-group">
+                            <input type="text" class="form-control py-4 bg-light" id="inp-message" placeholder="Write a message">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-success px-3"><i class="fas fa-paper-plane"></i></button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
 
             </div>
@@ -106,13 +108,16 @@
             JavaScript as bridge between Go and JS.
         -->
         <script>
-            const sendBtn = document.querySelector('#btn-send');
+            const messageForm = document.querySelector('#form-message');
             const messageInp = document.querySelector("#inp-message");
             const history = document.querySelector('#history');
             
-            sendBtn.addEventListener('click', async () => {
+            messageForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
                 let text = messageInp.value;
-                messageInp.value = "";
+                messageInp.value = '';
+                
                 await goSend(text);
             });
 
@@ -171,7 +176,7 @@
             const select = async function(jid) {
                 let conversation = await goLoadConversation(jid);
 
-                console.log(conversation);
+                document.getElementById('history').innerHTML = '';
                 
                 for (msg of conversation.History) {
                     appendToHistory(msg.FromRemote, msg.Text);
