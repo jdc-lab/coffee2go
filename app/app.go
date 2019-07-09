@@ -13,12 +13,12 @@ type App struct {
 	client     *xmpp.Client
 	roster     []xmpp.Item
 	currentJid string
-	histories  map[string][]string
+	histories  map[string][]xmpp.Chat
 }
 
 func New(server, username, password string) (*App, error) {
 	a := &App{}
-	a.histories = make(map[string][]string)
+	a.histories = make(map[string][]xmpp.Chat)
 
 	var uc *ui.Controller
 	var err error
@@ -109,3 +109,5 @@ func (a *App) onMsgRecv(msg xmpp.Chat) {
 
 	a.ui.AppendHistory(true, msg.Text)
 }
+
+func (a *App) conversationData(jid string)
