@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"github.com/jdc-lab/coffee2go/cmd/lorca/assets"
 	"log"
 	"net"
 	"net/http"
@@ -62,7 +63,7 @@ func (l *Lorca) Run(ready func()) {
 	}()
 
 	go func() {
-		if err := http.Serve(l.listener, http.FileServer(FS)); err != nil {
+		if err := http.Serve(l.listener, http.FileServer(assets.FS)); err != nil {
 			log.Fatal(err)
 		}
 	}()

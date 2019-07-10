@@ -17,4 +17,4 @@ coffee2go
 *.iml
 
 # Ignore generated assets files
-ui/assets.*
+cmd/lorca/assets/assets.*

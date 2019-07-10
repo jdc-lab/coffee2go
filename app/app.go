@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/jdc-lab/coffee2go/conf"
+	"flag"
 	"github.com/jdc-lab/coffee2go/ui"
 )
 
@@ -15,19 +15,12 @@ type app struct {
 	active module
 }
 
-func New() (*app, error) {
-	a := &app{}
-
-	var uc *ui.Controller
-	var err error
-
-	if uc, err = ui.NewLorcaController(conf.Width, conf.Height); err != nil {
-		return nil, err
+func New(uc ui.Controller) *app {
+	a := &app{
+		ui: uc,
 	}
 
-	a.ui = *uc
-
-	return a, nil
+	return a
 }
 
 func (a *app) changeModule(m module) {
@@ -39,9 +32,20 @@ func (a *app) changeModule(m module) {
 	a.active.open()
 }
 
-func (a *app) Run(server, username, password string) {
+func (a *app) parseFlags() (server, username, password *string) {
+	server = flag.String("server", "", `The server to connect with.`)
+	username = flag.String("username", "", `The XMPP username.`)
+	password = flag.String("password", "", `The corresponding password.`)
+
+	flag.Parse()
+
+	return
+}
+
+func (a *app) Run() {
 	a.ui.Main.Run(func() {
-		a.active = newLogin(a, server, username, password)
+		server, username, password := a.parseFlags()
+		a.active = newLogin(a, *server, *username, *password)
 		a.active.open()
 	})
 }
