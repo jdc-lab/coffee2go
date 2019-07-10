@@ -6,11 +6,13 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
+	"github.com/jdc-lab/coffee2go/ui/fyne/customlayout"
 )
 
 type Login struct {
 	*Master
 	onLoginLoaded func()
+	name          *widget.Label
 	server        *widget.Entry
 	username      *widget.Entry
 	password      *widget.Entry
@@ -20,6 +22,7 @@ type Login struct {
 func NewLogin(m *Master) *Login {
 	l := Login{
 		Master:   m,
+		name:     widget.NewLabel("Coffee2Go"),
 		server:   widget.NewEntry(),
 		username: widget.NewEntry(),
 		password: widget.NewPasswordEntry(),
@@ -62,9 +65,14 @@ func (l *Login) PrefillForm(server, username, password string) {
 }
 
 func (l *Login) LoadLogin() {
+	l.window.Resize(fyne.NewSize(150, 150))
 	l.window.SetContent(fyne.NewContainerWithLayout(layout.NewGridLayout(1),
-		l.server, l.username, l.password,
-		l.login))
+		fyne.NewContainerWithLayout(customlayout.NewHCenterLayout(), l.name),
+		fyne.NewContainerWithLayout(layout.NewMaxLayout(),
+			fyne.NewContainerWithLayout(layout.NewVBoxLayout(),
+				l.server, l.username, l.password, l.login))))
+
+	l.name.Move(fyne.NewPos(0, 0))
 
 	l.onLoginLoaded()
 }
