@@ -15,19 +15,22 @@ import (
 )
 
 type ui interface {
-	Bind(name string, f interface{}) error
-	Close()
 	Run(ready func())
 }
 
+type view interface {
+	Close()
+	Bind(name string, f interface{}) error
+}
+
 type loginUI interface {
-	ui
+	view
 	PrefillForm(server, username, password string)
 	LoadLogin()
 }
 
 type chatUI interface {
-	ui
+	view
 	AppendHistory(bool, string)
 	BuildRoster([]xmpp.Item)
 	Select(jid string)

@@ -40,7 +40,7 @@ func (a *app) changeModule(m module) {
 }
 
 func (a *app) Run(server, username, password string) {
-	a.ui.Run(func() {
+	a.ui.Main.Run(func() {
 		a.active = newLogin(a, server, username, password)
 		a.active.open()
 	})
