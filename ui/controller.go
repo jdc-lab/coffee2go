@@ -23,6 +23,7 @@ func NewFyneController(width int, height int) (*Controller, error) {
 	}
 
 	g.Main = ui
+	g.Login = fyne.NewLogin(ui)
 
 	return g, nil
 }

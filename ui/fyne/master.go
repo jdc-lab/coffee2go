@@ -3,7 +3,6 @@ package fyne
 import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
-	"fyne.io/fyne/layout"
 )
 
 type Master struct {
@@ -22,6 +21,6 @@ func NewFyne(width int, height int) (*Master, error) {
 }
 
 func (m *Master) Run(ready func()) {
-	m.window.SetContent(fyne.NewContainerWithLayout(layout.NewGridLayout(1)))
+	ready()
 	m.window.ShowAndRun()
 }

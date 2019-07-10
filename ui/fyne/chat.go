@@ -3,6 +3,7 @@ package fyne
 import "github.com/jdc-lab/coffee2go/xmpp"
 
 type chat struct {
+	*Master
 }
 
 func (c *chat) Close() {
