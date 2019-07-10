@@ -23,15 +23,15 @@ func newChat(a *app, client *xmpp.Client, servername, username string) *chat {
 	c.conversations = make(map[string]xmpp.Conversation)
 
 	// setup needed bindings (note: "go" is appended to each name)
-	c.ui.Bind("Send", c.send)
-	c.ui.Bind("OnChatLoaded", c.onChatLoaded)
-	c.ui.Bind("LoadConversation", c.loadConversation)
+	c.ui.ChatBind("Send", c.send)
+	c.ui.ChatBind("OnChatLoaded", c.onChatLoaded)
+	c.ui.ChatBind("LoadConversation", c.loadConversation)
 
 	return &c
 }
 
 func (c *chat) open() {
-	c.ui.LoadChat(c.servername, c.username)
+	c.ui.Chat.LoadChat(c.servername, c.username)
 }
 
 func (c *chat) close() {
@@ -64,7 +64,7 @@ func (c *chat) send(text string) {
 		}
 	}
 
-	c.ui.AppendHistory(false, text)
+	c.ui.Chat.AppendHistory(false, text)
 	// TODO: send message via xmpp
 }
 
@@ -74,14 +74,14 @@ func (c *chat) onChatLoaded() {
 	c.client.Listen(c.onMsgRecv)
 
 	c.roster = c.client.RefreshRoster()
-	c.ui.BuildRoster(c.roster)
+	c.ui.Chat.BuildRoster(c.roster)
 
 	// set first one as current selected
 	if len(c.roster) > 0 {
 		c.selectedJID = c.roster[0].Jid
 	}
 	fmt.Printf("\n\n JID!!!! %s\n\n", c.roster[0].Jid)
-	c.ui.Select(c.selectedJID)
+	c.ui.Chat.Select(c.selectedJID)
 }
 
 func (c *chat) onMsgRecv(chat xmpp.Chat) {
@@ -105,7 +105,7 @@ func (c *chat) onMsgRecv(chat xmpp.Chat) {
 	}
 
 	if remoteJID == c.selectedJID {
-		c.ui.AppendHistory(true, msg.Text)
+		c.ui.Chat.AppendHistory(true, msg.Text)
 	}
 }
 

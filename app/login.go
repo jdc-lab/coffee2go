@@ -21,14 +21,14 @@ func newLogin(a *app, server, username, password string) *login {
 	}
 
 	// setup needed bindings (note: "go" is appended to each name)
-	l.ui.Bind("Login", l.login)
-	l.ui.Bind("OnLoginLoaded", l.afterLoginUiLoaded)
+	l.ui.LoginBind("Login", l.login)
+	l.ui.LoginBind("OnLoginLoaded", l.afterLoginUiLoaded)
 
 	return &l
 }
 
 func (l *login) open() {
-	l.ui.LoadLogin()
+	l.ui.Login.LoadLogin()
 }
 
 func (l *login) close() {
@@ -37,7 +37,7 @@ func (l *login) close() {
 func (l *login) afterLoginUiLoaded() {
 	log.Printf("Starting login UI")
 	if l.server != "" || l.username != "" || l.password != "" {
-		l.ui.PrefillForm(l.server, l.username, l.password)
+		l.ui.Login.PrefillForm(l.server, l.username, l.password)
 	}
 }
 

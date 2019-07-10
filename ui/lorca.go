@@ -18,21 +18,34 @@ type ui interface {
 	Bind(name string, f interface{}) error
 	Close()
 	Run(ready func())
+}
 
-	// methods to execute coffee2go specific actions
-	AppendHistory(bool, string)
+type loginUI interface {
+	ui
 	PrefillForm(server, username, password string)
+	LoadLogin()
+}
+
+type chatUI interface {
+	ui
+	AppendHistory(bool, string)
 	BuildRoster([]xmpp.Item)
 	Select(jid string)
-
-	// module load methods
-	LoadLogin()
 	LoadChat(servername, username string)
 }
 
 type Lorca struct {
 	inner    lorca.UI
 	listener net.Listener
+}
+
+// dummy structs. Currently Lorca does everything
+type LorcaLogin struct {
+	*Lorca
+}
+
+type LorcaChat struct {
+	*Lorca
 }
 
 func NewLorca(width, height int, args ...string) (*Lorca, error) {
