@@ -4,12 +4,12 @@ import (
 	"log"
 )
 
-// Controller is the connection between ui and app.
-// it mostly just inherits a ui, but it also provides some convenience-methods, which make sense for all ui's. (e.g. Bind)
+// Controller is the connection between UI and app.
+// it mostly just inherits a UI, but it also provides some convenience-methods, which make sense for all UI's. (e.g. Bind)
 type Controller struct {
-	Main  ui
-	Login loginUI
-	Chat  chatUI
+	Main  UI
+	Login LoginUI
+	Chat  ChatUI
 }
 
 func NewLorcaController(width int, height int) (*Controller, error) {
@@ -42,7 +42,7 @@ func (c *Controller) LoginBind(name string, f interface{}) {
 	c.bind(name, f, c.Login)
 }
 
-func (c *Controller) bind(name string, f interface{}, u view) {
+func (c *Controller) bind(name string, f interface{}, u View) {
 	// TODO: check if f is a func
 	// TODO: wrap function  with another one which checks if we are in the correct module currently and prevents running the binding, if not
 	if err := u.Bind("go"+name, f); err != nil {
