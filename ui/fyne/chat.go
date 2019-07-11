@@ -15,7 +15,7 @@ type Chat struct {
 	loadConversation func(jid string) *xmpp.Conversation
 	send             *widget.Button
 	input            *widget.Entry
-	history          *fyne.Container
+	history          *widget.Entry
 	roster           *fyne.Container
 	sendBar          *fyne.Container
 }
@@ -26,10 +26,11 @@ func NewChat(m *Master) *Chat {
 		send:   widget.NewButton("Send", nil),
 		input:  widget.NewEntry(),
 
-		history: fyne.NewContainerWithLayout(layout.NewVBoxLayout()),
+		history: widget.NewMultiLineEntry(),
 		roster:  fyne.NewContainerWithLayout(layout.NewVBoxLayout()),
 	}
 
+	c.history.SetReadOnly(true)
 	c.sendBar = fyne.NewContainerWithLayout(layout.NewHBoxLayout(), c.input, c.send)
 
 	return &c
@@ -44,7 +45,8 @@ func (c *Chat) Bind(name string, f interface{}) error {
 	case "goSend":
 		if f, ok := f.(func(text string)); ok {
 			c.send.OnTapped = func() {
-				f(c.input.Text)
+				text := c.input.Text
+				f(text)
 				c.input.SetText("")
 			}
 		} else {
@@ -75,7 +77,15 @@ func (c *Chat) AppendHistory(fromRemote bool, history string) {
 		history = "Me: " + history
 	}
 
-	c.history.AddObject(widget.NewLabel(history))
+	text := c.history.Text
+
+	if text != "" {
+		text += "\n"
+	}
+
+	text += history
+
+	c.history.SetText(text)
 }
 
 func (c *Chat) BuildRoster(contacts []xmpp.Item) {
@@ -88,11 +98,13 @@ func (c *Chat) BuildRoster(contacts []xmpp.Item) {
 			c.Select(contact.Jid)
 		}))
 	}
+
+	c.window.Resize(c.appSize)
 }
 
 func (c *Chat) Select(jid string) {
 	conversation := c.loadConversation(jid)
-	//c.history = fyne.NewContainerWithLayout(layout.NewVBoxLayout())
+	c.history.SetText("")
 
 	for _, msg := range conversation.History {
 		c.AppendHistory(msg.FromRemote, msg.Text)
