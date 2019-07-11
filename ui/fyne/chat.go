@@ -61,8 +61,13 @@ func (c *Chat) Bind(name string, f interface{}) error {
 	return nil
 }
 
-// TODO: remove fromRemote, as it's ui specific and should not be exposed
 func (c *Chat) AppendHistory(fromRemote bool, history string) {
+	if fromRemote {
+		history = "You: " + history
+	} else {
+		history = "Me: " + history
+	}
+
 	c.history.AddObject(widget.NewLabel(history))
 }
 
