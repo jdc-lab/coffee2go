@@ -57,6 +57,7 @@ func (c *chat) send(text string) {
 	// append the new message text to the conversation's history.
 	if con, ok := c.conversations[c.selectedJID]; ok {
 		con.History = append(con.History, msg)
+		c.conversations[c.selectedJID] = con
 	} else {
 		// Otherwise, create a new conversation with a new history.
 		c.conversations[c.selectedJID] = xmpp.Conversation{
@@ -97,6 +98,7 @@ func (c *chat) onMsgRecv(chat xmpp.Chat) {
 	// append the new message text to the conversation's history.
 	if con, ok := c.conversations[remoteJID]; ok {
 		con.History = append(con.History, msg)
+		c.conversations[remoteJID] = con
 	} else {
 		// Otherwise, create a new conversation with a new history.
 		c.conversations[remoteJID] = xmpp.Conversation{
