@@ -21,7 +21,6 @@ type Login struct {
 func NewLogin(m *Master) *Login {
 	l := Login{
 		Master:   m,
-		name:     widget.NewLabel("Coffee2Go"),
 		server:   widget.NewEntry(),
 		username: widget.NewEntry(),
 		password: widget.NewPasswordEntry(),

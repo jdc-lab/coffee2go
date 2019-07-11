@@ -6,8 +6,9 @@ import (
 )
 
 type Master struct {
-	window fyne.Window
-	app    fyne.App
+	window  fyne.Window
+	app     fyne.App
+	appSize fyne.Size
 }
 
 func NewFyne(width int, height int) (*Master, error) {
@@ -16,7 +17,7 @@ func NewFyne(width int, height int) (*Master, error) {
 	}
 
 	m.window = m.app.NewWindow("Coffee2Go")
-	m.window.Resize(fyne.NewSize(width, height))
+	m.appSize = fyne.NewSize(width, height)
 	return m, nil
 }
 
