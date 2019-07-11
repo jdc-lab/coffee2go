@@ -22,10 +22,9 @@ type Chat struct {
 
 func NewChat(m *Master) *Chat {
 	c := Chat{
-		Master: m,
-		send:   widget.NewButton("Send", nil),
-		input:  widget.NewEntry(),
-
+		Master:  m,
+		send:    widget.NewButton("Send", nil),
+		input:   widget.NewEntry(),
 		history: widget.NewMultiLineEntry(),
 		roster:  fyne.NewContainerWithLayout(layout.NewVBoxLayout()),
 	}
@@ -33,6 +32,8 @@ func NewChat(m *Master) *Chat {
 	c.history.SetReadOnly(true)
 	c.sendBar = fyne.NewContainerWithLayout(layout.NewHBoxLayout(), c.input, c.send)
 
+	// Doesn't exist: :-( c.input.SetOnTypedKey(c.typedKey)
+	c.window.Canvas().SetOnTypedKey(c.typedKey)
 	return &c
 }
 
@@ -99,6 +100,7 @@ func (c *Chat) BuildRoster(contacts []xmpp.Item) {
 		}))
 	}
 
+	// needed, otherwise sometimes the GUI is not fully loaded
 	c.window.Resize(c.appSize)
 }
 
@@ -123,4 +125,10 @@ func (c *Chat) LoadChat(servername, username string) {
 		c.sendBar, c.roster, c.history))
 
 	c.onChatLoaded()
+}
+
+func (c *Chat) typedKey(ev *fyne.KeyEvent) {
+	if ev.Name == fyne.KeyReturn || ev.Name == fyne.KeyEnter {
+		c.send.OnTapped()
+	}
 }
