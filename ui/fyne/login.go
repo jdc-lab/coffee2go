@@ -1,11 +1,11 @@
 package fyne
 
 import (
-	"log"
 	"fmt"
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
+	"log"
 )
 
 type Login struct {
@@ -64,11 +64,11 @@ func (l *Login) PrefillForm(server, username, password string) {
 }
 
 func (l *Login) LoadLogin() {
-	l.window.Resize(fyne.NewSize(300, 0))
+	l.window.Resize(fyne.NewSize(300, 1))
 	l.window.SetFixedSize(true)
-	
+
 	l.window.SetContent(fyne.NewContainerWithLayout(layout.NewGridLayout(1),
-		fyne.NewContainerWithLayout(layout.NewFormLayout(),	
+		fyne.NewContainerWithLayout(layout.NewFormLayout(),
 			widget.NewLabel("Server:"),
 			l.server,
 			widget.NewLabel("Username:"),

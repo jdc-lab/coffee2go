@@ -1,3 +1,5 @@
+//go:generate go run -tags generate gen.go
+
 package main
 
 import (
