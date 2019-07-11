@@ -16,17 +16,23 @@ type Chat struct {
 	send             *widget.Button
 	input            *widget.Entry
 	history          *fyne.Container
+	roster           *fyne.Container
+	sendBar          *fyne.Container
 }
 
 func NewChat(m *Master) *Chat {
-	l := Chat{
-		Master:  m,
-		send:    widget.NewButton("Send", nil),
-		input:   widget.NewEntry(),
+	c := Chat{
+		Master: m,
+		send:   widget.NewButton("Send", nil),
+		input:  widget.NewEntry(),
+
 		history: fyne.NewContainerWithLayout(layout.NewVBoxLayout()),
+		roster:  fyne.NewContainerWithLayout(layout.NewVBoxLayout()),
 	}
 
-	return &l
+	c.sendBar = fyne.NewContainerWithLayout(layout.NewHBoxLayout(), c.input, c.send)
+
+	return &c
 }
 
 func (c *Chat) Close() {
@@ -39,6 +45,7 @@ func (c *Chat) Bind(name string, f interface{}) error {
 		if f, ok := f.(func(text string)); ok {
 			c.send.OnTapped = func() {
 				f(c.input.Text)
+				c.input.SetText("")
 			}
 		} else {
 			log.Fatal("Binding is not of correct function-type ", name)
@@ -71,27 +78,37 @@ func (c *Chat) AppendHistory(fromRemote bool, history string) {
 	c.history.AddObject(widget.NewLabel(history))
 }
 
-func (c *Chat) BuildRoster([]xmpp.Item) {
-	fmt.Println("implement me")
+func (c *Chat) BuildRoster(contacts []xmpp.Item) {
+
+	for _, contact := range contacts {
+		// cracy...
+		contact := contact
+		// ...
+		c.roster.AddObject(widget.NewButton(contact.Name, func() {
+			c.Select(contact.Jid)
+		}))
+	}
 }
 
 func (c *Chat) Select(jid string) {
-	fmt.Println("implement me")
+	conversation := c.loadConversation(jid)
+	//c.history = fyne.NewContainerWithLayout(layout.NewVBoxLayout())
+
+	for _, msg := range conversation.History {
+		c.AppendHistory(msg.FromRemote, msg.Text)
+	}
 }
 
 func (c *Chat) LoadChat(servername, username string) {
 	c.window.Resize(c.appSize)
 	c.window.SetFixedSize(false)
 
-	c.input.PlaceHolder = "Message"
-	sendBar := fyne.NewContainerWithLayout(layout.NewHBoxLayout(), c.input, c.send)
-
 	c.window.SetContent(fyne.NewContainerWithLayout(layout.NewBorderLayout(
 		nil,
-		sendBar,
-		nil,
+		c.sendBar,
+		c.roster,
 		nil),
-		sendBar, c.history))
+		c.sendBar, c.roster, c.history))
 
 	c.onChatLoaded()
 }
