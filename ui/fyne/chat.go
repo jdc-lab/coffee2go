@@ -96,7 +96,7 @@ func (c *Chat) BuildRoster(contacts []xmpp.Item) {
 		contact := contact
 		// ...
 		c.roster.AddObject(widget.NewButton(contact.Name, func() {
-			c.Select(contact.Jid)
+			c.Select(contact.Jid, contact.Name)
 		}))
 	}
 
@@ -104,7 +104,7 @@ func (c *Chat) BuildRoster(contacts []xmpp.Item) {
 	c.window.Resize(c.appSize)
 }
 
-func (c *Chat) Select(jid string) {
+func (c *Chat) Select(jid string, name string) {
 	conversation := c.loadConversation(jid)
 	c.history.SetText("")
 

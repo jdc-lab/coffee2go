@@ -67,20 +67,7 @@
                 <!--
                     Chat head with remote name.
                 -->
-                <div class="p-2 bg-white border-bottom">
-                    <div class="row m-0">
-                        <div class="col-3 col-md-2 p-0 pl-2">
-                            <img class="rounded-lg user-avatar" src="img/lisa-espresso.png" alt="Lisa Espresso">
-                        </div>
-                        <div class="col-9 col-md-10 p-0">
-                            <h4 class="text-dark m-0"><i>Lisa Espresso</i></h4>
-                            <small>
-                                <span class="status bg-success mr-2"></span>ONLINE
-                                <span class="text-muted">&ndash; <i>&quot;Trinke gerade Coffee2Go und bin erreichbar.&quot;</i></span>
-                            </small>
-                        </div>
-                    </div>
-                </div>
+                <div id="chat-head" class="p-2 bg-white border-bottom"></div>
 
                 <!--
                     The actual chat history.
@@ -157,7 +144,7 @@
                 sub = escape(sub);
 
                 let e = `
-                    <a class="list-group-item list-group-item-action flex-column align-items-start" onclick="select('${jid}')">
+                    <a class="list-group-item list-group-item-action flex-column align-items-start" onclick="select('${jid}', '${name}')">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1"><span class="status bg-success mr-2"></span>${name}</h6>
                             <small>${jid}</small>
@@ -170,7 +157,30 @@
                 roster.insertAdjacentHTML('afterbegin', e);
             }
 
-            const select = async function(jid) {
+            async function select(jid, name) {
+                jid = escape(jid);
+                name = escape(name);
+
+                // set header
+                let header = document.getElementById('chat-head');
+                header.innerHTML = `
+                    <div class="row m-0">
+                        <div class="col-3 col-md-2 p-0 pl-2">
+                            <img class="rounded-lg user-avatar" src="img/lisa-espresso.png" alt="${name}">
+                        </div>
+                        <div class="col-9 col-md-10 p-0">
+                            <h4 class="text-dark m-0"><i>${name}</i></h4>
+                            <small>${jid}</small>
+                            <br>
+                            <small>
+                            <span class="status bg-success mr-2"></span>ONLINE
+                                <span class="text-muted">&ndash; <i>&quot;Trinke gerade Coffee2Go und bin erreichbar.&quot;</i></span>
+                            </small>
+                        </div>
+                    </div>
+                `;
+
+                // load conversations
                 let conversation = await goLoadConversation(jid);
 
                 document.getElementById('history').innerHTML = '';

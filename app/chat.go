@@ -12,7 +12,7 @@ type chat struct {
 	*app
 	client               *xmpp.Client
 	roster               []xmpp.Item
-	selectedJID          string
+	selected             xmpp.Item
 	conversations        map[string]xmpp.Conversation
 	servername, username string
 }
@@ -46,7 +46,7 @@ func (c *chat) send(text string) {
 		return
 	}
 
-	c.client.SendMessage(c.selectedJID, text)
+	c.client.SendMessage(c.selected.Jid, text)
 
 	msg := xmpp.Message{
 		FromRemote: false,
@@ -55,12 +55,12 @@ func (c *chat) send(text string) {
 
 	// If the conversation (identified by JID) exists,
 	// append the new message text to the conversation's history.
-	if con, ok := c.conversations[c.selectedJID]; ok {
+	if con, ok := c.conversations[c.selected.Jid]; ok {
 		con.History = append(con.History, msg)
-		c.conversations[c.selectedJID] = con
+		c.conversations[c.selected.Jid] = con
 	} else {
 		// Otherwise, create a new conversation with a new history.
-		c.conversations[c.selectedJID] = xmpp.Conversation{
+		c.conversations[c.selected.Jid] = xmpp.Conversation{
 			History: []xmpp.Message{msg},
 		}
 	}
@@ -78,10 +78,10 @@ func (c *chat) onChatLoaded() {
 
 	// set first one as current selected
 	if len(c.roster) > 0 {
-		c.selectedJID = c.roster[0].Jid
+		c.selected = c.roster[0]
 	}
 	fmt.Printf("\n\n JID!!!! %s\n\n", c.roster[0].Jid)
-	c.ui.Chat.Select(c.selectedJID)
+	c.ui.Chat.Select(c.selected.Jid, c.selected.Name)
 }
 
 func (c *chat) onMsgRecv(chat xmpp.Chat) {
@@ -105,13 +105,13 @@ func (c *chat) onMsgRecv(chat xmpp.Chat) {
 		}
 	}
 
-	if remoteJID == c.selectedJID {
+	if remoteJID == c.selected.Jid {
 		c.ui.Chat.AppendHistory(true, msg.Text)
 	}
 }
 
 func (c *chat) loadConversation(jid string) *xmpp.Conversation {
-	c.selectedJID = jid
+	c.selected.Jid = jid
 
 	if con, ok := c.conversations[jid]; ok {
 		return &con

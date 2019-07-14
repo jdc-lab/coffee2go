@@ -21,6 +21,6 @@ type ChatUI interface {
 	View
 	AppendHistory(bool, string)
 	BuildRoster([]xmpp.Item)
-	Select(jid string)
+	Select(jid string, name string)
 	LoadChat(servername, username string)
 }

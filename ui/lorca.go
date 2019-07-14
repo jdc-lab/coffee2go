@@ -120,8 +120,8 @@ func (l *Lorca) BuildRoster(contacts []xmpp.Item) {
 	}
 }
 
-func (l *Lorca) Select(jid string) {
-	l.inner.Eval(fmt.Sprintf(`select(%q)`, jid))
+func (l *Lorca) Select(jid string, name string) {
+	l.inner.Eval(fmt.Sprintf(`select(%q, %q)`, jid, name))
 }
 
 func (l *Lorca) load(url string) error {
