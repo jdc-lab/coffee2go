@@ -46,7 +46,7 @@ func (c *chat) send(text string) {
 		return
 	}
 
-	c.client.Send()
+	c.client.SendMessage(c.selectedJID, text)
 
 	msg := xmpp.Message{
 		FromRemote: false,
@@ -66,7 +66,6 @@ func (c *chat) send(text string) {
 	}
 
 	c.ui.Chat.AppendHistory(false, text)
-	// TODO: send message via xmpp
 }
 
 func (c *chat) onChatLoaded() {

@@ -123,5 +123,10 @@ func (c *Client) RefreshRoster() []Item {
 	return roster
 }
 
-func (c *Client) Send() {
+func (c *Client) SendMessage(jid string, message string) {
+	c.Send(xmpp.Chat{
+		Remote: jid,
+		Type:   "chat",
+		Text:   message,
+	})
 }
