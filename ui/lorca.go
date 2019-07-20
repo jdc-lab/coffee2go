@@ -2,7 +2,7 @@ package ui
 
 import (
 	"fmt"
-	"github.com/jdc-lab/coffee2go/cmd/lorca/assets"
+	"github.com/jdc-lab/coffee2go/cmd/assets"
 	"log"
 	"net"
 	"net/http"

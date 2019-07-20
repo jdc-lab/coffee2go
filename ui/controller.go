@@ -2,6 +2,7 @@ package ui
 
 import (
 	"github.com/jdc-lab/coffee2go/ui/fyne"
+	"github.com/jdc-lab/coffee2go/ui/webview"
 	"log"
 )
 
@@ -47,6 +48,22 @@ func NewLorcaController(width int, height int) (*Controller, error) {
 	g.Chat = LorcaChat{
 		ui,
 	}
+
+	return g, nil
+}
+
+func NewWebviewController(width int, height int) (*Controller, error) {
+	g := &Controller{}
+
+	var err error
+	var ui *webview.Master
+	if ui, err = webview.NewWebview(width, height); err != nil {
+		return nil, err
+	}
+
+	g.Main = ui
+	g.Login = webview.NewLogin(ui)
+	g.Chat = webview.NewChat(ui)
 
 	return g, nil
 }
