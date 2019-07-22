@@ -6,9 +6,10 @@
         <link rel="shortcut icon" href="img/favicon.png">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/default.css">
+        <script src="js/goBind.js"></script>
     </head>
 
-    <body class="bg-light h-100" onload="goOnLoginLoaded()">
+    <body class="bg-light h-100" onload="go('goOnLoginLoaded')">
         <div class="row m-0 h-100">
             <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
 
@@ -62,7 +63,7 @@
                 let username = usernameInp.value;
                 let password = passwordInp.value;
 
-                await goLogin(server, username, password);
+                await go('goLogin2', [server, username, password]);
             });
         </script>
     </body>

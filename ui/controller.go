@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"github.com/jdc-lab/coffee2go/ui/fyne"
 	"github.com/jdc-lab/coffee2go/ui/webview"
 	"log"
 )
@@ -12,22 +11,6 @@ type Controller struct {
 	Main  UI
 	Login LoginUI
 	Chat  ChatUI
-}
-
-func NewFyneController(width int, height int) (*Controller, error) {
-	g := &Controller{}
-
-	var err error
-	var ui *fyne.Master
-	if ui, err = fyne.NewFyne(width, height); err != nil {
-		return nil, err
-	}
-
-	g.Main = ui
-	g.Login = fyne.NewLogin(ui)
-	g.Chat = fyne.NewChat(ui)
-
-	return g, nil
 }
 
 func NewLorcaController(width int, height int) (*Controller, error) {
