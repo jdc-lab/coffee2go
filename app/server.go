@@ -2,20 +2,37 @@ package app
 
 import (
 	"flag"
+	"github.com/go-chi/chi"
 	"net/http"
 )
 
 type Server struct {
+	r rest
+}
+
+func NewServer() *Server {
+	hostname, username, password := parseFlags()
+	return &Server{
+		rest{
+			Login{
+				*hostname,
+				*username,
+				*password,
+			},
+		},
+	}
 }
 
 // starts webserver
 func (s *Server) Run() {
-	//hostname, username, password := parseFlags()
+	router := chi.NewRouter()
+
+	s.r.setup(router)
 
 	fs := http.FileServer(http.Dir("client"))
-	http.Handle("/", fs)
+	router.Handle("/*", fs)
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", router)
 }
 
 func parseFlags() (hostname, username, password *string) {

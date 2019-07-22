@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de" class="h-100">
+
 <head>
-    <meta charset="UTF-8">
     <title>Coffee2Go</title>
+    <link rel="shortcut icon" href="img/favicon.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/default.css">
 </head>
-<body>
-Coffe2Go
+
+<body class="bg-light h-100" onload="prefillLogin()">
+<div class="row m-0 h-100">
+    <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
+
+    <!--
+        Main area with login form.
+    -->
+    <div class="col-12 col-sm-8 col-md-4">
+        <div class="my-5 text-center">
+            <img src="img/coffee2go.png" alt="Coffee2Go"/>
+        </div>
+        <form class="my-5" id="form-login" autocomplete="off" spellcheck="false">
+            <div class="form-group">
+                <input type="text" class="form-control border-none my-2 text-center" id="inp-server"
+                       placeholder="Servername">
+                <input type="text" class="form-control border-none my-2 text-center" id="inp-username"
+                       placeholder="Username">
+                <input type="password" class="form-control border-none my-2 text-center" id="inp-password"
+                       placeholder="Password">
+                <div class="my-5 text-center">
+                    <button type="submit" class="btn btn-primary px-3">
+                        <small class="text-500">START CHATTING</small>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <p class="text-center">
+            <small class="text-muted">&copy; 2019 Coffee2Go</small>
+        </p>
+    </div>
+
+    <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
+</div>
+
+<script>
+    const serverInp = document.querySelector("#inp-server");
+    const usernameInp = document.querySelector("#inp-username");
+    const passwordInp = document.querySelector('#inp-password');
+
+    async function prefillLogin() {
+        fetch('/api/login/getPrefill')
+            .then(data => {
+                return data.json()
+            })
+            .then(res => {
+                serverInp.value = res.Hostname;
+                usernameInp.value = res.Username;
+                passwordInp.value = res.Password;
+            })
+            .catch(err => console.error(err));
+    }
+
+    document.querySelector('#form-login').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        //let token = await login(serverInp.value, usernameInp.value, passwordInp.value);
+    });
+</script>
 </body>
+
 </html>
