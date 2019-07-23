@@ -3,6 +3,7 @@ package app
 import (
 	"flag"
 	"github.com/go-chi/chi"
+	"html/template"
 	"net/http"
 )
 
@@ -11,16 +12,7 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	hostname, username, password := parseFlags()
-	return &Server{
-		rest{
-			Login{
-				*hostname,
-				*username,
-				*password,
-			},
-		},
-	}
+	return &Server{}
 }
 
 // starts webserver
@@ -29,8 +21,21 @@ func (s *Server) Run() {
 
 	s.r.setup(router)
 
-	fs := http.FileServer(http.Dir("client"))
-	router.Handle("/*", fs)
+	hostname, username, password := parseFlags()
+	tmpl := template.Must(template.ParseFiles("client/index.html"))
+
+	login := Login{
+		*hostname,
+		*username,
+		*password,
+	}
+	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		// prefill login if login data is provided. (for development)
+		tmpl.Execute(w, login)
+	})
+
+	fs := http.FileServer(http.Dir("client/static"))
+	router.Handle("/static*", fs)
 
 	http.ListenAndServe(":8080", router)
 }

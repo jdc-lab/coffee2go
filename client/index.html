@@ -5,10 +5,10 @@
     <title>Coffee2Go</title>
     <link rel="shortcut icon" href="img/favicon.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/default.css">
+    <link rel="stylesheet" href="static/css/default.css">
 </head>
 
-<body class="bg-light h-100" onload="prefillLogin()">
+<body class="bg-light h-100">
 <div class="row m-0 h-100">
     <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
 
@@ -22,11 +22,11 @@
         <form class="my-5" id="form-login" autocomplete="off" spellcheck="false">
             <div class="form-group">
                 <input type="text" class="form-control border-none my-2 text-center" id="inp-server"
-                       placeholder="Servername">
+                       placeholder="Servername" value="{{.Hostname}}">
                 <input type="text" class="form-control border-none my-2 text-center" id="inp-username"
-                       placeholder="Username">
+                       placeholder="Username" value="{{.Username}}">
                 <input type="password" class="form-control border-none my-2 text-center" id="inp-password"
-                       placeholder="Password">
+                       placeholder="Password" value="{{.Password}}">
                 <div class="my-5 text-center">
                     <button type="submit" class="btn btn-primary px-3">
                         <small class="text-500">START CHATTING</small>
@@ -47,22 +47,37 @@
     const usernameInp = document.querySelector("#inp-username");
     const passwordInp = document.querySelector('#inp-password');
 
-    async function prefillLogin() {
-        fetch('/api/login/getPrefill')
+    async function login(server, username, password) {
+        let options = {
+            method: 'POST',
+            body: JSON.stringify({
+                hostname: server,
+                username: username,
+                password: password,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        let token = null;
+
+        await fetch('/api/login', options)
             .then(data => {
                 return data.json()
             })
             .then(res => {
-                serverInp.value = res.Hostname;
-                usernameInp.value = res.Username;
-                passwordInp.value = res.Password;
+                token = res.token
             })
             .catch(err => console.error(err));
+
+        return token;
     }
 
     document.querySelector('#form-login').addEventListener('submit', async (e) => {
         e.preventDefault();
-        //let token = await login(serverInp.value, usernameInp.value, passwordInp.value);
+        let token = await login(serverInp.value, usernameInp.value, passwordInp.value);
+        console.log(token)
     });
 </script>
 </body>
