@@ -3,12 +3,24 @@ package app
 import (
 	"flag"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 	"html/template"
 	"net/http"
 )
 
+
+type Login struct {
+	Hostname string `json:"hostname"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type session struct {
+	token uuid.UUID
+}
+
 type Server struct {
-	r rest
+	sessions []session
 }
 
 func NewServer() *Server {
@@ -19,8 +31,13 @@ func NewServer() *Server {
 func (s *Server) Run() {
 	router := chi.NewRouter()
 
-	s.r.setup(router)
+	s.setupAPI(router)
+	s.setupWeb(router)
 
+	http.ListenAndServe(":8080", router)
+}
+
+func (s *Server) setupWeb(router *chi.Mux) {
 	hostname, username, password := parseFlags()
 	tmpl := template.Must(template.ParseFiles("client/index.html"))
 
@@ -36,8 +53,6 @@ func (s *Server) Run() {
 
 	fs := http.FileServer(http.Dir("client/static"))
 	router.Handle("/static*", fs)
-
-	http.ListenAndServe(":8080", router)
 }
 
 func parseFlags() (hostname, username, password *string) {

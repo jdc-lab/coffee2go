@@ -7,15 +7,7 @@ import (
 	"net/http"
 )
 
-type Login struct {
-	Hostname string `json:"hostname"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type rest struct{}
-
-func (rs *rest) setup(router *chi.Mux) {
+func (s *Server) setupAPI(router *chi.Mux) {
 	router.Post("/api/login", func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 
@@ -31,10 +23,14 @@ func (rs *rest) setup(router *chi.Mux) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		tokenJson, err := json.Marshal(struct {
+		tokenJson, err := json.Marshal(struct{
 			Token string `json:"token"`
 		}{
 			Token: token.String(),
+		})
+
+		s.sessions = append(s.sessions, session{
+			token,
 		})
 
 		if err != nil {
