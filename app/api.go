@@ -23,7 +23,7 @@ func (s *Server) setupAPI(router *chi.Mux) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		tokenJson, err := json.Marshal(struct{
+		tokenJson, err := json.Marshal(struct {
 			Token string `json:"token"`
 		}{
 			Token: token.String(),
@@ -38,5 +38,15 @@ func (s *Server) setupAPI(router *chi.Mux) {
 		}
 
 		w.Write(tokenJson)
+	})
+
+	router.Get("/api/login/preset", func(w http.ResponseWriter, r *http.Request) {
+		loginJson, err := json.Marshal(s.loginPreset)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		w.Write(loginJson)
 	})
 }

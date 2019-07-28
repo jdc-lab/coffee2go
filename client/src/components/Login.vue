@@ -26,18 +26,17 @@
 <script>
     export default {
         name: 'Login',
+        props: {
+            hostPreset: String,
+            usernamePreset: String,
+            passwordPreset: String
+        },
         data: function () {
             return {
-                host: "",
-                username: "",
-                password: ""
+                host: this.hostPreset,
+                username: this.usernamePreset,
+                password: this.passwordPreset
             }
-        },
-        created() {
-            // TODO: call preset api
-            this.host = "huhu";
-            this.username = "huhu";
-            this.password = "huhu";
         },
         methods: {
             login() {

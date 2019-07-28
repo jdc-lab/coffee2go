@@ -9,7 +9,7 @@ import (
 )
 
 type Login struct {
-	Hostname string `json:"hostname"`
+	Host     string `json:"host"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -19,7 +19,8 @@ type session struct {
 }
 
 type Server struct {
-	sessions []session
+	sessions    []session
+	loginPreset Login
 }
 
 func NewServer() *Server {
@@ -30,7 +31,12 @@ func NewServer() *Server {
 func (s *Server) Run() {
 	router := chi.NewRouter()
 
-	devURL, _, _, _ := parseFlags()
+	devURL, host, username, password := parseFlags()
+	s.loginPreset = Login{
+		Host:     *host,
+		Username: *username,
+		Password: *password,
+	}
 
 	s.setupAPI(router)
 

@@ -1,7 +1,11 @@
 <template>
     <div class="row m-0 h-100" id="app">
         <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
-        <Login @login="login" v-if="token == null"></Login>
+        <Login :host-preset="host" :key="loginKey"
+               :password-preset="password"
+               :username-preset="username"
+               @login="login"
+               v-if="token == null"/>
         <p v-if="token != null">Logged In</p>
         <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
     </div>
@@ -18,8 +22,37 @@
         },
         data: function () {
             return {
-                token: null
+                token: null,
+                loginKey: 0, // for reloading login for preset
+                host: "",
+                username: "",
+                password: ""
             }
+        },
+        created() {
+            let options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            let res = fetch('/api/login/preset', options)
+                .then(data => {
+                    return data.json()
+                })
+                .then(res => {
+                    if (res.host)
+                        this.host = res.host;
+                    if (res.username)
+                        this.username = res.username;
+                    if (res.password)
+                        this.password = res.password;
+
+                    // reload login component
+                    this.loginKey += 1;
+                })
+                .catch(err => console.error(err));
         },
         methods: {
             login() {
