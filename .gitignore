@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-coffee2go
+^coffee2go$
 
 # Test binary, build with `go test -c`
 *.test
@@ -15,7 +15,3 @@ coffee2go
 # IntelliJ IDEA
 .idea
 *.iml
-
-# Ignore generated assets files
-cmd/assets/assets*
-ui/webview/assets*
