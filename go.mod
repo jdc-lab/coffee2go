@@ -5,4 +5,5 @@ go 1.12
 require (
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/google/uuid v1.1.1
+	github.com/mattn/go-xmpp v0.0.0-20190124093244-6093f50721ed
 )

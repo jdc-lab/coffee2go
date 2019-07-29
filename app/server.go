@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
+	"github.com/jdc-lab/coffee2go/xmpp"
 	"net/http"
 	"net/url"
 )
@@ -16,6 +17,8 @@ type Login struct {
 
 type session struct {
 	token uuid.UUID
+	// todo use interface between xmpp and server to make the chat more generic
+	chat *xmpp.Client
 }
 
 type Server struct {

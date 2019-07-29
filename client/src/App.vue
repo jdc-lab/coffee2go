@@ -31,19 +31,17 @@
         created() {
             axios.get('/api/login/preset').then(res => {
                 this.presetLogin = res.data;
-            })
-                .catch(err => console.error(err));
+            }).catch(err => console.error(err));
         },
         methods: {
             login(host, username, password) {
                 axios.post('/api/login', {
-                    hostname: host,
+                    host: host,
                     username: username,
                     password: password,
                 }).then(res => {
                     this.token = res.data.token
-                })
-                    .catch(err => console.error(err));
+                }).catch(err => console.error(err));
             }
         }
     }
