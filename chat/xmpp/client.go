@@ -2,14 +2,18 @@ package xmpp
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/jdc-lab/coffee2go/chat"
 	"github.com/mattn/go-xmpp"
+	"log"
 	"strings"
 )
 
 type Client struct {
-	client      *xmpp.Client
 	InsecureTLS bool
+
+	client *xmpp.Client
+	onRecv func(history chat.History)
 }
 
 // splits the hostname on : to get only the host without port
@@ -56,16 +60,65 @@ func (c Client) Send(to chat.UserID, message string) error {
 	panic("implement me")
 }
 
-func (c Client) OnRecv(func(from chat.User)) {
-	panic("implement me")
-}
-
 func (c Client) GetContacts() []chat.User {
 	panic("implement me")
 }
 
 func (c Client) GetConversation(chat.UserID) []chat.History {
 	panic("implement me")
+}
+
+func (c *Client) Run(chRecv chan chat.History) {
+	go func() {
+		for {
+			message, err := c.client.Recv()
+			if err != nil {
+				// close on error (e.g. connection lost, if message closed)
+				log.Println(err)
+				return
+			}
+
+			switch v := message.(type) {
+			case xmpp.Chat:
+
+				if len(v.Text) > 0 {
+					chRecv <- chat.History{
+						From:      chat.UserID(v.Remote),
+						To:        chat.UserID(c.client.JID()),
+						Message:   v.Text,
+						Subject:   v.Subject,
+						Timestamp: v.Stamp,
+					}
+				}
+
+			case xmpp.Presence:
+				fmt.Println("Not supported yet", v.From, v.Show)
+
+			case xmpp.IQ:
+				fmt.Println("Not supported yet")
+				/*if v.Type == "result" {
+					// parse query xml
+					var q query
+
+					err := xml.Unmarshal(v.Query, &q)
+					if err != nil {
+						fmt.Printf("error: %v", err)
+						return
+					}
+
+					switch q.Xmlns {
+					case "jabber:iq:roster":
+						c.roster <- q.Items
+					default:
+						fmt.Println("Not supported yet", q)
+					}
+				}*/
+
+			default:
+				fmt.Println("Not supported yet")
+			}
+		}
+	}()
 }
 
 /*

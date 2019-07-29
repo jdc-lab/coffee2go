@@ -14,10 +14,11 @@ type User struct {
 }
 
 type History struct {
-	From      User
-	To        User
+	From      UserID
+	To        UserID
+	Subject   string
 	Message   string
-	timestamp time.Time
+	Timestamp time.Time
 }
 
 type Client interface {
@@ -25,9 +26,11 @@ type Client interface {
 	// Should return AlreadyLoggedIn error if called a second time.
 	Login(host, username, password string) error
 	Send(to UserID, message string) error
-	OnRecv(func(from User)) // TODO: Recv as callback or with channels?
 	GetContacts() []User
 	GetConversation(UserID) []History
+
+	// starts listening to the server
+	Run(chRecv chan History)
 }
 
 // errors
