@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Setup fileserver to serve the client files.
 func (s *Server) setupWeb(router *chi.Mux, folder string) {
 	// Handle static content, we have to explicitly put our top level dirs in here
 	// - otherwise the NotFoundHandler will catch them
@@ -21,7 +22,9 @@ func (s *Server) setupWeb(router *chi.Mux, folder string) {
 	}))
 }
 
-func (s *Server) setupWebDev(router *chi.Mux, client *url.URL) {
+// Setup proxy which forwards everything to the client. Needed to prevent cross origin error if the client is provided
+// by another Server. (e.g. by yarn serve in development environment)
+func (s *Server) setupWebClientProxy(router *chi.Mux, client *url.URL) {
 	// EVERYTHING redirect to client
 	router.NotFound(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		httputil.NewSingleHostReverseProxy(client).ServeHTTP(res, req)

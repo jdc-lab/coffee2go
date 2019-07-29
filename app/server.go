@@ -48,7 +48,7 @@ func (s *Server) Run() {
 	} else {
 		client, err := url.Parse(*devURL)
 		if err == nil {
-			s.setupWebDev(router, client)
+			s.setupWebClientProxy(router, client)
 		}
 	}
 

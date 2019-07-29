@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 	"github.com/jdc-lab/coffee2go/xmpp"
@@ -30,7 +29,6 @@ func (s *Server) setupAPI(router *chi.Mux) {
 		}
 
 		// connect to xmpp
-		fmt.Println(login.Host, login.Username, login.Password)
 		client, err := xmpp.NewClient(login.Host, login.Username, login.Password, true)
 		if err != nil {
 			// TODO: better handling of failed login
@@ -58,6 +56,7 @@ func (s *Server) setupAPI(router *chi.Mux) {
 		w.Write(tokenJson)
 	})
 
+	// returns the presets for the login form. (provided by commandline options. Only intended for development)
 	router.Get("/api/login/preset", func(w http.ResponseWriter, r *http.Request) {
 		loginJson, err := json.Marshal(s.loginPreset)
 
