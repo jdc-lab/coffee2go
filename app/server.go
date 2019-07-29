@@ -16,18 +16,19 @@ type Login struct {
 }
 
 type session struct {
-	token uuid.UUID
 	// todo use interface between xmpp and server to make the client more generic
 	client chat.Client
 }
 
 type Server struct {
-	sessions    []session
+	sessions    map[uuid.UUID]session
 	loginPreset Login
 }
 
 func NewServer() *Server {
-	return &Server{}
+	return &Server{
+		sessions: map[uuid.UUID]session{},
+	}
 }
 
 // starts webserver

@@ -40,10 +40,7 @@ func (s *Server) setupAPI(router *chi.Mux) {
 			return
 		}
 
-		s.sessions = append(s.sessions, session{
-			token,
-			client,
-		})
+		s.sessions[token] = session{client}
 
 		// send new session token
 		tokenJson, err := json.Marshal(struct {
