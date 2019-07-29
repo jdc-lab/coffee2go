@@ -1,9 +1,7 @@
 <template>
     <div class="row m-0 h-100" id="app">
         <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
-        <Login :host-preset="host"
-               :password-preset="password"
-               :username-preset="username"
+        <Login :preset="presetLogin"
                @login="login"
                v-if="token == null"/>
         <p v-if="token != null">Logged In</p>
@@ -23,10 +21,12 @@
         data: function () {
             return {
                 token: null,
-                host: "",
-                username: "",
-                password: ""
-            }
+                presetLogin: {
+                    host: "",
+                    username: "",
+                    password: ""
+                },
+            };
         },
         created() {
             let options = {
@@ -41,23 +41,18 @@
                     return data.json()
                 })
                 .then(res => {
-                    if (res.host)
-                        this.host = res.host;
-                    if (res.username)
-                        this.username = res.username;
-                    if (res.password)
-                        this.password = res.password;
+                    this.presetLogin = res;
                 })
                 .catch(err => console.error(err));
         },
         methods: {
-            login() {
+            login(host, username, password) {
                 let options = {
                     method: 'POST',
                     body: JSON.stringify({
-                        hostname: this.host,
-                        username: this.username,
-                        password: this.password,
+                        hostname: host,
+                        username: username,
+                        password: password,
                     }),
                     headers: {
                         'Content-Type': 'application/json'

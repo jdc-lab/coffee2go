@@ -27,34 +27,37 @@
     export default {
         name: 'Login',
         props: {
-            hostPreset: String,
-            usernamePreset: String,
-            passwordPreset: String
+            preset: {
+                host: String,
+                username: String,
+                password: String
+            }
         },
         data: function () {
             return {
-                host: this.hostPreset,
-                username: this.usernamePreset,
-                password: this.passwordPreset
+                host: "",
+                username: "",
+                password: ""
             }
         },
         methods: {
             login() {
-                this.$emit('login');
+                this.$emit('login', this.host, this.username, this.password);
             }
         },
         watch: {
-            hostPreset: function (newVal, oldVal) {
-                if (oldVal == "")
-                    this.host = newVal;
-            },
-            usernamePreset: function (newVal, oldVal) {
-                if (oldVal == "")
-                    this.username = newVal;
-            },
-            passwordPreset: function (newVal, oldVal) {
-                if (oldVal == "")
-                    this.password = newVal;
+            /**
+             * Presets fields if new preset values set.
+             * Only sets fields which are not already set.
+             * @param presets object of preset values
+             */
+            preset: function (presets) {
+                if (presets.host && !this.host)
+                    this.host = presets.host;
+                if (presets.username && !this.username)
+                    this.username = presets.username;
+                if (presets.password && !this.password)
+                    this.password = presets.password;
             }
         }
     }
