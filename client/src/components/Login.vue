@@ -42,6 +42,20 @@
             login() {
                 this.$emit('login');
             }
+        },
+        watch: {
+            hostPreset: function (newVal, oldVal) {
+                if (oldVal == "")
+                    this.host = newVal;
+            },
+            usernamePreset: function (newVal, oldVal) {
+                if (oldVal == "")
+                    this.username = newVal;
+            },
+            passwordPreset: function (newVal, oldVal) {
+                if (oldVal == "")
+                    this.password = newVal;
+            }
         }
     }
 </script>

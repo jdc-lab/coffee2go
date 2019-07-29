@@ -1,7 +1,7 @@
 <template>
     <div class="row m-0 h-100" id="app">
         <div class="col-12 col-sm-2 col-md-4 d-none d-sm-block"></div>
-        <Login :host-preset="host" :key="loginKey"
+        <Login :host-preset="host"
                :password-preset="password"
                :username-preset="username"
                @login="login"
@@ -23,7 +23,6 @@
         data: function () {
             return {
                 token: null,
-                loginKey: 0, // for reloading login for preset
                 host: "",
                 username: "",
                 password: ""
@@ -37,7 +36,7 @@
                 }
             };
 
-            let res = fetch('/api/login/preset', options)
+            fetch('/api/login/preset', options)
                 .then(data => {
                     return data.json()
                 })
@@ -48,9 +47,6 @@
                         this.username = res.username;
                     if (res.password)
                         this.password = res.password;
-
-                    // reload login component
-                    this.loginKey += 1;
                 })
                 .catch(err => console.error(err));
         },
