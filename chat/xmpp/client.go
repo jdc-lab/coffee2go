@@ -2,6 +2,75 @@ package xmpp
 
 import (
 	"crypto/tls"
+	"github.com/jdc-lab/coffee2go/chat"
+	"github.com/mattn/go-xmpp"
+	"strings"
+)
+
+type Client struct {
+	client      *xmpp.Client
+	InsecureTLS bool
+}
+
+// splits the hostname on : to get only the host without port
+// TODO: ipv6 supported by go-xmpp??
+func serverName(host string) string {
+	return strings.Split(host, ":")[0]
+}
+
+// Connects to a xmpp server using the provided host, username and password.
+func (c *Client) Login(host, username, password string) error {
+	if c.client != nil {
+		return chat.AlreadyLoggedIn()
+	}
+
+	xmpp.DefaultConfig = tls.Config{
+		ServerName:         serverName(host),
+		InsecureSkipVerify: c.InsecureTLS,
+	}
+
+	var xc *xmpp.Client
+	var err error
+
+	options := xmpp.Options{
+		Host:          host,
+		User:          username,
+		Password:      password,
+		NoTLS:         false,
+		Debug:         true,
+		Session:       false,
+		Status:        "xa",
+		StatusMessage: "Hello",
+	}
+
+	if xc, err = options.NewClient(); err != nil {
+		return err
+	}
+
+	c.client = xc
+
+	return nil
+}
+
+func (c Client) Send(to chat.UserID, message string) error {
+	panic("implement me")
+}
+
+func (c Client) OnRecv(func(from chat.User)) {
+	panic("implement me")
+}
+
+func (c Client) GetContacts() []chat.User {
+	panic("implement me")
+}
+
+func (c Client) GetConversation(chat.UserID) []chat.History {
+	panic("implement me")
+}
+
+/*
+import (
+	"crypto/tls"
 	"encoding/xml"
 	"fmt"
 	"log"
@@ -129,4 +198,4 @@ func (c *Client) SendMessage(jid string, message string) {
 		Type:   "chat",
 		Text:   message,
 	})
-}
+}*/

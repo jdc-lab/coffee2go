@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
-	"github.com/jdc-lab/coffee2go/xmpp"
+	"github.com/jdc-lab/coffee2go/chat"
+	"github.com/jdc-lab/coffee2go/chat/xmpp"
 	"net/http"
 )
 
@@ -28,10 +29,13 @@ func (s *Server) setupAPI(router *chi.Mux) {
 			return
 		}
 
-		// connect to xmpp
-		client, err := xmpp.NewClient(login.Host, login.Username, login.Password, true)
+		// connect to client server
+		var client chat.Client = &xmpp.Client{
+			InsecureTLS: true,
+		}
+		err = client.Login(login.Host, login.Username, login.Password)
 		if err != nil {
-			// TODO: better handling of failed login
+			// TODO: better handling of failed login. e.g. show on ui
 			http.Error(w, err.Error(), http.StatusForbidden)
 			return
 		}
