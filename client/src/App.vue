@@ -11,7 +11,7 @@
 
 <script>
     import Login from './components/Login.vue'
-    import '../public/css/default.css'
+    import axios from 'axios'
 
     export default {
         name: 'app',
@@ -29,43 +29,20 @@
             };
         },
         created() {
-            let options = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            fetch('/api/login/preset', options)
-                .then(data => {
-                    return data.json()
-                })
-                .then(res => {
-                    this.presetLogin = res;
-                })
+            axios.get('/api/login/preset').then(res => {
+                this.presetLogin = res.data;
+            })
                 .catch(err => console.error(err));
         },
         methods: {
             login(host, username, password) {
-                let options = {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        hostname: host,
-                        username: username,
-                        password: password,
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                };
-
-                fetch('/api/login', options)
-                    .then(data => {
-                        return data.json()
-                    })
-                    .then(res => {
-                        this.token = res.token
-                    })
+                axios.post('/api/login', {
+                    hostname: host,
+                    username: username,
+                    password: password,
+                }).then(res => {
+                    this.token = res.data.token
+                })
                     .catch(err => console.error(err));
             }
         }
