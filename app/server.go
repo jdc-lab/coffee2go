@@ -26,6 +26,7 @@ type session struct {
 
 // used as callback if message received
 func (sess *session) recvMessage(history chat.History) {
+	// TODO: save history for later use (if client fetches it by api)
 	sess.pushMessage("recv")
 }
 

@@ -17,18 +17,18 @@ func (s *Server) setupWeb(router *chi.Mux, folder string) {
 	FileServer(router, "/img", http.Dir(folder+"/img"))
 
 	// EVERYTHING else redirect to index.html
-	router.NotFound(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+	router.NotFound(func(res http.ResponseWriter, req *http.Request) {
 		http.ServeFile(res, req, folder+"/index.html")
-	}))
+	})
 }
 
 // Setup proxy which forwards everything to the client. Needed to prevent cross origin error if the client is provided
 // by another Server. (e.g. by yarn serve in development environment)
 func (s *Server) setupWebClientProxy(router *chi.Mux, client *url.URL) {
 	// EVERYTHING redirect to client
-	router.NotFound(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+	router.NotFound(func(res http.ResponseWriter, req *http.Request) {
 		httputil.NewSingleHostReverseProxy(client).ServeHTTP(res, req)
-	}))
+	})
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve

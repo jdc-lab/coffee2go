@@ -55,6 +55,8 @@
                         this.sse = new EventSource("/push/" + res.data);
                         this.sse.addEventListener("recv", function (event) {
                             console.log("recv ")
+
+                            // Fetch new messages
                         });
                         this.sse.onopen = function (event) {
                             console.log("open ")
