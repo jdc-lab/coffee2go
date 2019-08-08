@@ -2,11 +2,14 @@ package app
 
 import (
 	"flag"
+	"github.com/alexandrevicenzi/go-sse"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 	"github.com/jdc-lab/coffee2go/chat"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 type Login struct {
@@ -17,18 +20,23 @@ type Login struct {
 
 type session struct {
 	// todo use interface between xmpp and server to make the client more generic
-	client chat.Client
-	recv   chan chat.History
+	client    chat.Client
+	recv      chan chat.History
+	pushToken uuid.UUID
 }
 
 type Server struct {
 	sessions    map[uuid.UUID]*session
 	loginPreset Login
+	sse         *sse.Server
 }
 
 func NewServer() *Server {
 	return &Server{
 		sessions: map[uuid.UUID]*session{},
+		sse: sse.NewServer(&sse.Options{
+			Logger: log.New(os.Stdout, "go-sse: ", log.Ldate|log.Ltime|log.Lshortfile),
+		}),
 	}
 }
 

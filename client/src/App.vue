@@ -20,6 +20,7 @@
         },
         data: function () {
             return {
+                sse: null,
                 token: null,
                 presetLogin: {
                     host: "",
@@ -41,7 +42,37 @@
                     password: password,
                 }).then(res => {
                     this.token = res.data.token
+                    this.subscribe()
                 }).catch(err => console.error(err));
+            },
+            /**
+             * Subscribe to push messages
+             */
+            subscribe() {
+
+                axios.get('/api/auth/' + this.token + '/push/register').then(res => {
+                    if (this.sse == null) {
+                        this.sse = new EventSource("/push/" + res.data);
+                        this.sse.onmessage = function (event) {
+                            console.log("recv ")
+                        };
+                        this.sse.onopen = function (event) {
+                            console.log("open ")
+                        };
+                        this.sse.onerror = function (event) {
+                            console.log("error ")
+                        };
+
+                    }
+                }).catch(err => console.error(err));
+
+                /*
+
+                this.sse.onmessage = function(e) {
+                    console.log(e.channel)
+                    console.log(e.data)
+                    console.log(e.time)
+                }*/
             }
         }
     }

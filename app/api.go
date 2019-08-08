@@ -1,85 +1,54 @@
 package app
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
-	"github.com/jdc-lab/coffee2go/chat"
-	"github.com/jdc-lab/coffee2go/chat/xmpp"
+	"log"
 	"net/http"
 )
 
 func (s *Server) setupAPI(router *chi.Mux) {
-	// logging in
-	// starts connection to xmpp
-	router.Post("/api/login", func(w http.ResponseWriter, r *http.Request) {
-		decoder := json.NewDecoder(r.Body)
+	router.Route("/api/login", func(router chi.Router) {
+		s.setupLogin(router)
+	})
 
-		var login Login
-		err := decoder.Decode(&login)
+	router.Handle("/push/*", s.sse)
+
+	// everything after logged in
+	router.Route("/api/auth/{token}", func(router chi.Router) {
+		router.Use(s.loggedIn)
+		s.setupPushRegister(router)
+	})
+}
+
+func (s *Server) loggedIn(next http.Handler) http.Handler {
+	// TODO: do not use session token in URL instead as param??
+	// TODO: maybe also check username??
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, err := uuid.Parse(chi.URLParam(r, "token"))
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		// generate a new session token for this user
-		token, err := uuid.NewRandom()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// connect to client server
-		var client chat.Client = &xmpp.Client{
-			InsecureTLS: true,
-		}
-		err = client.Login(login.Host, login.Username, login.Password)
-		if err != nil {
-			// TODO: better handling of failed login. e.g. show on ui
+		if _, ok := s.sessions[token]; !ok {
 			http.Error(w, err.Error(), http.StatusForbidden)
 			return
 		}
 
-		sess := &session{
-			client: client,
-			recv:   make(chan chat.History),
-		}
-		s.sessions[token] = sess
-
-		client.Run(sess.recv)
-
-		go func() {
-			for {
-				msg := <-sess.recv
-				fmt.Println(msg.From, msg.Message)
-			}
-		}()
-
-		// send new session token
-		tokenJson, err := json.Marshal(struct {
-			Token string `json:"token"`
-		}{
-			Token: token.String(),
-		})
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Write(tokenJson)
+		ctx := context.WithValue(r.Context(), "token", token)
+		log.Println(token)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
 
-	// returns the presets for the login form. (provided by commandline options. Only intended for development)
-	router.Get("/api/login/preset", func(w http.ResponseWriter, r *http.Request) {
-		loginJson, err := json.Marshal(s.loginPreset)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		w.Write(loginJson)
-	})
+func token(w http.ResponseWriter, r *http.Request) (uuid.UUID, bool) {
+	token, ok := r.Context().Value("token").(uuid.UUID)
+	if !ok {
+		log.Println("context value 'token' is not a  uuid")
+		http.Error(w, "", http.StatusInternalServerError)
+		return token, ok
+	}
+	return token, ok
 }
