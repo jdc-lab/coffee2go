@@ -68,7 +68,7 @@ func (c Client) GetConversation(chat.UserID) []chat.History {
 	panic("implement me")
 }
 
-func (c *Client) Run(chRecv chan chat.History) {
+func (c *Client) Run(cbRecvMessage func(history chat.History)) {
 	go func() {
 		for {
 			message, err := c.client.Recv()
@@ -82,13 +82,13 @@ func (c *Client) Run(chRecv chan chat.History) {
 			case xmpp.Chat:
 
 				if len(v.Text) > 0 {
-					chRecv <- chat.History{
+					cbRecvMessage(chat.History{
 						From:      chat.UserID(v.Remote),
 						To:        chat.UserID(c.client.JID()),
 						Message:   v.Text,
 						Subject:   v.Subject,
 						Timestamp: v.Stamp,
-					}
+					})
 				}
 
 			case xmpp.Presence:

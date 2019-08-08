@@ -13,11 +13,11 @@ func channelName(token uuid.UUID) string {
 	return "/push/" + token.String()
 }
 
-func (s *Server) pushMessage(token uuid.UUID, event string) {
-	channel := channelName(token)
+func (sess *session) pushMessage(event string) {
+	channel := channelName(sess.pushToken)
 	log.Println(channel)
-	if !s.sse.HasChannel(channel) {
-		log.Println("client", token, "not connected to push server")
+	if !sess.server.sse.HasChannel(channel) {
+		// no need to send message if client is not connected
 		return
 	}
 
@@ -26,7 +26,7 @@ func (s *Server) pushMessage(token uuid.UUID, event string) {
 		log.Println("could not generate msgID")
 		return
 	}
-	s.sse.SendMessage(channel, sse.NewMessage(msgID.String(), time.Now().String(), event))
+	sess.server.sse.SendMessage(channel, sse.NewMessage(msgID.String(), time.Now().String(), event))
 }
 
 // Setups push messages via server-sent events (SSE).

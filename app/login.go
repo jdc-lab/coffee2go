@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 	"github.com/jdc-lab/coffee2go/chat"
@@ -42,19 +41,13 @@ func (s *Server) setupLogin(router chi.Router) {
 		}
 
 		sess := &session{
+			server: s,
 			client: client,
-			recv:   make(chan chat.History),
 		}
+
 		s.sessions[token] = sess
 
-		client.Run(sess.recv)
-
-		go func() {
-			for {
-				msg := <-sess.recv
-				fmt.Println(msg.From, msg.Message)
-			}
-		}()
+		client.Run(sess.recvMessage)
 
 		// send new session token
 		tokenJson, err := json.Marshal(struct {

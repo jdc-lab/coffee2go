@@ -30,7 +30,7 @@ type Client interface {
 	GetConversation(UserID) []History
 
 	// starts listening to the server
-	Run(chRecv chan History)
+	Run(cbRecvMessage func(history History))
 }
 
 // errors

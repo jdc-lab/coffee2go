@@ -53,9 +53,9 @@
                 axios.get('/api/auth/' + this.token + '/push/register').then(res => {
                     if (this.sse == null) {
                         this.sse = new EventSource("/push/" + res.data);
-                        this.sse.onmessage = function (event) {
+                        this.sse.addEventListener("recv", function (event) {
                             console.log("recv ")
-                        };
+                        });
                         this.sse.onopen = function (event) {
                             console.log("open ")
                         };

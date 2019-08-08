@@ -19,10 +19,14 @@ type Login struct {
 }
 
 type session struct {
-	// todo use interface between xmpp and server to make the client more generic
+	server    *Server
 	client    chat.Client
-	recv      chan chat.History
 	pushToken uuid.UUID
+}
+
+// used as callback if message received
+func (sess *session) recvMessage(history chat.History) {
+	sess.pushMessage("recv")
 }
 
 type Server struct {
