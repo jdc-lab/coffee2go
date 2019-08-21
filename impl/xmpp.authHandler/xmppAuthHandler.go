@@ -12,7 +12,7 @@ var tokenTimeToLive = time.Hour * 2
 type tokenHandler struct {
 }
 
-func (t tokenHandler) UserLogin(host, username, password string) (user *domain.ChatConnection, token string, err error) {
+func (t tokenHandler) UserLogin(host, username, password string) (user *domain.ChatConnection, err error) {
 	panic("implement me")
 }
 

@@ -12,12 +12,12 @@ type Handler interface {
 }
 
 type ConnectLogic interface {
-	ConnectServer(host, username, password string) (user Chat, token string, err error)
+	ConnectServer(host, username, password string) (sessionID string, err error)
 	ConnectPreset() (host, username, password string)
 }
 
 type ChatLogic interface {
-	ChatSend(message domain.Message, recipient domain.ChatConnection) (err error)
+	ChatSend(message domain.Message) (err error)
 	ChatRegisterForPush() (err error)
 	ChatPushNewMessage() (err error)
 	ChatGetContacts() (err error)

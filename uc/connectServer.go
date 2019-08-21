@@ -1,21 +1,13 @@
 package uc
 
-func (i interactor) ConnectServer(host, username, password string) (user Chat, token string, err error) {
-	/*	user, err := i.userRW.GetByEmailAndPassword(email, password)
-		if err != nil {
-			return nil, "", err
-		}
-		if user == nil {
-			return nil, "", ErrNotFound
-		}
+func (i interactor) ConnectServer(host, username, password string) (sessionID string, err error) {
+	serverConnection, err := i.connection.Connect(host, username, password)
 
-		token, err := i.authHandler.GenUserToken(user.Name)
-		if err != nil {
-			return nil, "", err
-		}
-	*/
-	panic("ConnectServer usecase not implemented yet")
-	//return user, token, nil
+	if err != nil {
+		return "", err
+	}
+
+	return i.session.Add(serverConnection)
 }
 
 func (i interactor) ConnectPreset() (host, username, password string) {

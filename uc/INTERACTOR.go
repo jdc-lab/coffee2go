@@ -1,5 +1,7 @@
 package uc
 
+import "github.com/jdc-lab/coffee2go/domain"
+
 // interactor implements Handler -> can handle all usecases (implementations are in extra files)
 // It also contains all interfaces needed by the usecase-implementations which are implemented by impl package
 type interactor struct {
@@ -7,12 +9,11 @@ type interactor struct {
 	chat       Chat       // Handles everything needed by chats
 	push       Push       // Handles push message connections
 	conf       Conf       // Handles configuration
+	session    Session    // Handles sessions
 }
 
 type Connection interface {
-	/*UserLogin(host, username, password string) (user *domain.ChatConnection, token string, err error)
-	GenUserToken(username string) (token string, err error)
-	GetUser(token string) (userName *domain.ChatConnection, err error)*/
+	Connect(host, username, password string) (serverConnection *Chat, err error)
 }
 
 type Chat interface {
@@ -28,4 +29,9 @@ type Push interface {
 
 type Conf interface {
 	GetConnectionPreset() (host, username, password string)
+}
+
+type Session interface {
+	Add(session *Chat) (sessionID string, err error)
+	Get(sessionId string) (session *domain.Session, err error)
 }
