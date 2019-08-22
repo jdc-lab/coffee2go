@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/jdc-lab/coffee2go/impl/session"
 	"github.com/jdc-lab/coffee2go/impl/xmpp"
 	"github.com/jdc-lab/coffee2go/uc"
 	"time"
@@ -12,7 +13,7 @@ func main() {
 		Connection: &xmpp.AuthHandler{},
 		Push:       &dummyPush{},
 		Conf:       &dummyConf{},
-		Session:    &dummySession{},
+		Session:    session.New(),
 	}
 
 	handler := hc.New()

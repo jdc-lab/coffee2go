@@ -43,7 +43,7 @@ func (a *AuthHandler) Connect(host, username, password string) (serverConnection
 		return nil, err
 	}
 
-	return &chatConnection{
+	return &chatHandler{
 		xc,
 	}, nil
 }

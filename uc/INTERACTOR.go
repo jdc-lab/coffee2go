@@ -34,5 +34,5 @@ type Conf interface {
 
 type Session interface {
 	Add(session *Chat) (sessionID string, err error)
-	Get(sessionId string) (session *Chat, err error)
+	Get(sessionID string) (session *Chat, err error)
 }

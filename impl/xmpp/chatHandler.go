@@ -6,11 +6,11 @@ import (
 	"log"
 )
 
-type chatConnection struct {
+type chatHandler struct {
 	client *xmpp.Client
 }
 
-func (c *chatConnection) Run() {
+func (c *chatHandler) Run() {
 	go func() {
 		for {
 			_, err := c.client.Recv()
@@ -23,14 +23,14 @@ func (c *chatConnection) Run() {
 	}()
 }
 
-func (c *chatConnection) Send(message domain.Message) (err error) {
+func (c *chatHandler) Send(message domain.Message) (err error) {
 	panic("implement me")
 }
 
-func (c *chatConnection) GetContacts() (err error) {
+func (c *chatHandler) GetContacts() (err error) {
 	panic("implement me")
 }
 
-func (c *chatConnection) SwitchChat() (err error) {
+func (c *chatHandler) SwitchChat() (err error) {
 	panic("implement me")
 }
