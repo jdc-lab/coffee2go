@@ -26,24 +26,29 @@ type ChatLogic interface {
 
 type HandlerConstructor struct {
 	Connection Connection
-	Chat       Chat
 	Push       Push
+	Conf       Conf
+	Session    Session
 }
 
 func (c HandlerConstructor) New() Handler {
 	if c.Connection == nil {
 		log.Fatal("missing Connection")
 	}
-	if c.Chat == nil {
-		log.Fatal("missing Chat")
-	}
 	if c.Push == nil {
 		log.Fatal("missing Push")
+	}
+	if c.Conf == nil {
+		log.Fatal("missing Conf")
+	}
+	if c.Session == nil {
+		log.Fatal("missing Session")
 	}
 
 	return interactor{
 		connection: c.Connection,
-		chat:       c.Chat,
 		push:       c.Push,
+		conf:       c.Conf,
+		session:    c.Session,
 	}
 }

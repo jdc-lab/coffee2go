@@ -13,13 +13,14 @@ type interactor struct {
 }
 
 type Connection interface {
-	Connect(host, username, password string) (serverConnection *Chat, err error)
+	Connect(host, username, password string) (serverConnection Chat, err error)
 }
 
 type Chat interface {
-	/*Send(message domain.Message, recipient domain.ChatConnection) (err error)
+	Send(message domain.Message) (err error)
+	Run()
 	GetContacts() (err error)
-	SwitchChat() (err error)*/
+	SwitchChat() (err error)
 }
 
 type Push interface {
@@ -33,5 +34,5 @@ type Conf interface {
 
 type Session interface {
 	Add(session *Chat) (sessionID string, err error)
-	Get(sessionId string) (session *domain.Session, err error)
+	Get(sessionId string) (session *Chat, err error)
 }

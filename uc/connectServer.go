@@ -7,7 +7,9 @@ func (i interactor) ConnectServer(host, username, password string) (sessionID st
 		return "", err
 	}
 
-	return i.session.Add(serverConnection)
+	serverConnection.Run()
+
+	return i.session.Add(&serverConnection)
 }
 
 func (i interactor) ConnectPreset() (host, username, password string) {
