@@ -24,8 +24,8 @@ type Chat interface {
 }
 
 type Push interface {
-	Register() (err error)
-	Send() (err error)
+	Register(sessionID string) (pushToken string, err error)
+	Send(sessionID string, data string) (err error)
 }
 
 type Conf interface {
