@@ -20,7 +20,7 @@ func serverName(host string) string {
 type AuthHandler struct {
 }
 
-func (a *AuthHandler) Connect(host, username, password string) (serverConnection uc.Chat, err error) {
+func (AuthHandler) Connect(host, username, password string) (serverConnection uc.Chat, err error) {
 	xmpp.DefaultConfig = tls.Config{
 		ServerName:         serverName(host),
 		InsecureSkipVerify: true, // TODO make configurable
