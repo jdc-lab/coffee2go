@@ -6,8 +6,18 @@ func (i interactor) ChatSend(message domain.Message) (err error) {
 	panic("ChatSend usecase not implemented yet")
 }
 
-func (i interactor) ChatRegisterForPush() (err error) {
-	panic("ChatRegisterForPush usecase not implemented yet")
+func (i interactor) ChatRegisterForPush(sessionID string) (pushToken string, err error) {
+	_, err = i.session.Get(sessionID)
+
+	if err != nil {
+		return "", err
+	}
+
+	if pushToken, err := i.push.Register(sessionID); err != nil {
+		return "", err
+	} else {
+		return pushToken, nil
+	}
 }
 
 func (i interactor) ChatPushNewMessage() (err error) {

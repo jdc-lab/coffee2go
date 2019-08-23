@@ -14,6 +14,8 @@ type PushHandler struct {
 	sse        *sse.Server
 }
 
+// todo register as handler for router
+
 func New() *PushHandler {
 	return &PushHandler{
 		make(map[string]string, 0),

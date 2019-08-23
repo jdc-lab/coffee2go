@@ -18,7 +18,7 @@ type ConnectLogic interface {
 
 type ChatLogic interface {
 	ChatSend(message domain.Message) (err error)
-	ChatRegisterForPush() (err error)
+	ChatRegisterForPush(sessionID string) (pushToken string, err error)
 	ChatPushNewMessage() (err error)
 	ChatGetContacts() (err error)
 	ChatSwitch() (err error)
